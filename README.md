@@ -1,13 +1,7 @@
-Droid_Scep2
-===========
-Android Certificate Enrollment client
+# Droid_SCEP3
 
-Droid Scep is an Android app (API19/KitKat) that demonstrate's jScep.org, A Java implementation of the Simple Certificate Enrolment Protocol: https://code.google.com/p/jscep/
+Android SCEP (Simple Certificate Enrollment Protocol) client. primarily intended for usage in open source MDM (Mobile Device Management) solutions like [OCO][https://github.com/schorschii/oco-server].
 
-Droid scep demonstrates how to request an x509 certificate from a simple certificate enrollment protocol enabled certification authority such as Microsoft's or Cisco's Network Device Entrollment implementations: 
+This is a fork of [Droid_Scep2](https://github.com/gjyoung1974/Droid_Scep2), with updated libraries and MDM policy configuration support added.
 
-http://social.technet.microsoft.com/wiki/contents/articles/9063.network-device-enrollment-service-ndes-in-active-directory-certificate-services-ad-cs.aspx
-
-http://www.cisco.com/c/en/us/support/docs/security-vpn/public-key-infrastructure-pki/116167-technote-scep-00.html
-
-~Gordon
+It can (automatically) request an x509 certificate from a SCEP server such as [Microsoft's](http://social.technet.microsoft.com/wiki/contents/articles/9063.network-device-enrollment-service-ndes-in-active-directory-certificate-services-ad-cs.aspx) or [Cisco's Network Device Entrollment](http://www.cisco.com/c/en/us/support/docs/security-vpn/public-key-infrastructure-pki/116167-technote-scep-00.html) implementations.
