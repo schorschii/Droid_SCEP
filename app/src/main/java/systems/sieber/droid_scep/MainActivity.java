@@ -1,7 +1,4 @@
-package com.gordon.scep.client;
-
-import java.net.MalformedURLException;
-import java.security.NoSuchAlgorithmException;
+package systems.sieber.droid_scep;
 
 import android.app.Activity;
 import android.content.Intent;

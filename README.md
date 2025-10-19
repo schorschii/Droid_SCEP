@@ -1,4 +1,4 @@
-# Droid_SCEP3
+# Droid_SCEP
 
 Android SCEP (Simple Certificate Enrollment Protocol) client. primarily intended for usage in open source MDM (Mobile Device Management) solutions like [OCO](https://github.com/schorschii/oco-server).
 

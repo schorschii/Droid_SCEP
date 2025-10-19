@@ -1,4 +1,4 @@
-package com.gordon.scep.client;
+package systems.sieber.droid_scep;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

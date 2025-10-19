@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 36
     buildToolsVersion '27.0.3'
-    namespace 'com.gordon.scep.client'
+    namespace 'systems.sieber.droid_scep'
 
     defaultConfig {
-        applicationId "com.goyoung.pki.util.scep.droid_scep2"
+        applicationId "systems.sieber.droid_scep"
         minSdkVersion 19
         targetSdkVersion 33
         versionCode 1
