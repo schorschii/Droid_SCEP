@@ -13,5 +13,17 @@
         android:key="enrollment-challenge"
         android:title="Enrollment Challenge Password"
         android:restrictionType="string" />
+    <restriction
+        android:key="keystore-password"
+        android:title="Keystore/Import Password"
+        android:restrictionType="string" />
+    <restriction
+        android:key="keystore-alias"
+        android:title="Display Name in Android Keystore"
+        android:restrictionType="string" />
+    <restriction
+        android:key="rsa-key-length"
+        android:title="RSA Key Length"
+        android:restrictionType="integer" />
 
 </restrictions>

@@ -5,7 +5,7 @@
     <string name="menu_settings">Settings</string>
 
     <string name="key_size">Key Size</string>
-    <string name="import_password">Import password</string>
+    <string name="import_password">Keystore/Import Password</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge Passphrase</string>
     <string name="subject_dn">Subject DN</string>
     <string name="scep_server_url">SCEP Server URL</string>
@@ -14,7 +14,10 @@
 
     <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
-    <string-array name="rsalen_arrays" translatable="false">
+    <string name="default_keystore_alias" translatable="false">SCEP Certificate</string>
+    <string name="default_rsa_len" translatable="false">4096</string>
+    <string-array name="rsa_lens" translatable="false">
+        <item>1024</item>
         <item>2048</item>
         <item>4096</item>
         <item>8192</item>

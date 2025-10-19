@@ -45,10 +45,10 @@ import org.spongycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class ScepClient {
 
-    public static byte[] CertReq(String enrollentURL, String entityName, String enrollmentChallenge, int isKeyLen)
+    public static byte[] CertReq(String enrollentURL, String entityName, String enrollmentChallenge, int isKeyLen, String keystoreAlias, String keystorePassword)
             throws ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
 
-        //load SpongyCastle
+        // load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
 
         URL server = new URL(enrollentURL);
@@ -83,8 +83,7 @@ public class ScepClient {
 
         // set the password
         DERPrintableString password = new DERPrintableString(enrollmentChallenge);
-        crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_challengePassword,
-                password);
+        crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_challengePassword, password);
 
         // Send the enrollment request
         EnrollmentResponse response = client.enrol(cert, keyPair.getPrivate(), crb.build(cs), "NDESCA");
@@ -111,10 +110,10 @@ public class ScepClient {
         keyStore.load(null, null);
 
         Key k = keyPair.getPrivate();
-        keyStore.setKeyEntry("mykey", k, "Password1!".toCharArray(), certz);
+        keyStore.setKeyEntry(keystoreAlias, k, keystorePassword.toCharArray(), certz);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        keyStore.store(bout, "Password1!".toCharArray()); // this is the password to open the .p12
+        keyStore.store(bout, keystorePassword.toCharArray()); // this is the password to open the .p12
 
         byte[] keystore = bout.toByteArray();
         bout.close();

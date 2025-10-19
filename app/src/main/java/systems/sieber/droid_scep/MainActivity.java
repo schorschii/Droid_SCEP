@@ -11,14 +11,17 @@ import android.security.KeyChain;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
 	TextView editTextUrl;
 	TextView editTextCommonName;
-	TextView editTextenrollmentChallenge;
+	TextView editTextEnrollmentChallenge;
+	TextView editTextKeystorePassword;
 	Spinner spinnerKeyLen;
+	String keystoreAlias;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,8 @@ public class MainActivity extends Activity {
 
 		editTextUrl = findViewById(R.id.editTextScepUrl);
 		editTextCommonName = findViewById(R.id.exitTextCommonName);
-		editTextenrollmentChallenge = findViewById(R.id.editTextEnrollmentChallenge);
+		editTextEnrollmentChallenge = findViewById(R.id.editTextEnrollmentChallenge);
+		editTextKeystorePassword = findViewById(R.id.editTextKeystorePassword);
 		spinnerKeyLen = findViewById(R.id.spinnerKeySize);
 
 		applyPolicies();
@@ -46,7 +50,17 @@ public class MainActivity extends Activity {
 			Bundle appRestrictions = restrictionsMgr.getApplicationRestrictions();
 			editTextUrl.setText( appRestrictions.getString("scep-url", getString(R.string.default_server_url)) );
 			editTextCommonName.setText( appRestrictions.getString("subject-dn", getString(R.string.default_subject_dn)) );
-			editTextenrollmentChallenge.setText( appRestrictions.getString("enrollment-challenge", "") );
+			editTextEnrollmentChallenge.setText( appRestrictions.getString("enrollment-challenge", "1FDE8ED526747EADB0681A952963CDE4") );
+			editTextKeystorePassword.setText( appRestrictions.getString("keystore-password", "") );
+			keystoreAlias = appRestrictions.getString("keystore-alias", getString(R.string.default_keystore_alias));
+
+			String defaultRsaKeyLen = String.valueOf( appRestrictions.getInt("rsa-key-length", Integer.parseInt(getString(R.string.default_rsa_len))) );
+			SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
+			for(int i = 0; i < adapter.getCount(); i++) {
+				if(adapter.getItem(i).toString().equals(defaultRsaKeyLen)) {
+					spinnerKeyLen.setSelection(i);
+				}
+			}
 		}
 	}
 
@@ -59,8 +73,16 @@ public class MainActivity extends Activity {
 		StrictMode.setThreadPolicy(policy);
 
 		try {
-			byte[] keystore = ScepClient.CertReq(sURI.toString(), editTextCommonName.getText().toString(), editTextenrollmentChallenge.getText().toString(), isKeyLen);
-			
+			byte[] keystore = ScepClient.CertReq(
+					sURI.toString(),
+					editTextCommonName.getText().toString(),
+					editTextEnrollmentChallenge.getText().toString(),
+					isKeyLen,
+					keystoreAlias,
+					editTextKeystorePassword.getText().toString()
+			);
+
+			// import into system/user keystore
 			Intent intent = KeyChain.createInstallIntent();
 			intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
 			startActivity(intent);
