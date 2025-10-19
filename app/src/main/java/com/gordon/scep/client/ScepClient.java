@@ -24,10 +24,12 @@ import java.util.Iterator;
 
 import org.jscep.client.Client;
 
+import org.jscep.client.ClientException;
 import org.jscep.client.EnrollmentResponse;
 import org.jscep.client.verification.CertificateVerifier;
 import org.jscep.client.verification.OptimisticCertificateVerifier;
 
+import org.jscep.transaction.TransactionException;
 import org.spongycastle.asn1.DERPrintableString;
 import org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.spongycastle.asn1.x500.X500Name;
@@ -43,7 +45,8 @@ import org.spongycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class ScepClient {
 
-    public static byte[] CertReq(String enrollentURL, String entityName, String tVPassword, int isKeyLen) throws CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
+    public static byte[] CertReq(String enrollentURL, String entityName, String tVPassword, int isKeyLen)
+            throws ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
 
         //load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
@@ -84,34 +87,31 @@ public class ScepClient {
                 password);
 
         // Send the enrollment request
-        EnrollmentResponse response = new EnrollmentResponse(null);
-        try {
-            response = client.enrol(cert, keyPair.getPrivate(), crb.build(cs), "NDESCA");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        EnrollmentResponse response = client.enrol(cert, keyPair.getPrivate(), crb.build(cs), "NDESCA");
 
         Certificate certz[] = new Certificate[1];
         // Automatic enrollment, so this should be issued
-        if (response.isSuccess()) {
+        if(!response.isSuccess()) {
+            throw new ClientException(response.getFailInfo().toString());
+        }
 
-            CertStore store = response.getCertStore();
-            Collection<? extends Certificate> certs = store.getCertificates(null);
+        CertStore store = response.getCertStore();
+        Collection<? extends Certificate> certs = store.getCertificates(null);
 
-            @SuppressWarnings("unchecked")
-            Iterator<Certificate> ir = (Iterator<Certificate>) certs.iterator();
+        @SuppressWarnings("unchecked")
+        Iterator<Certificate> ir = (Iterator<Certificate>) certs.iterator();
 
-            int i = 0;
-            while (ir.hasNext()) {
-                certz[i] = ir.next();
-                System.out.println(certz[i]);
-            }
+        int i = 0;
+        while(ir.hasNext()) {
+            certz[i] = ir.next();
+            System.out.println(certz[i]);
         }
 
         KeyStore keyStore = KeyStore.getInstance("PKCS12", "BC");
         keyStore.load(null, null);
 
-        keyStore.setKeyEntry("mykey", (Key) keyPair.getPrivate(), "Password1!".toCharArray(), certz);
+        Key k = keyPair.getPrivate();
+        keyStore.setKeyEntry("mykey", k, "Password1!".toCharArray(), certz);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         keyStore.store(bout, "Password1!".toCharArray()); // this is the password to open the .p12

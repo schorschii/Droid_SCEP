@@ -1,140 +1,89 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="14dp"
     tools:context=".MainActivity"
-    android:background="@android:color/black">
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button1"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="73dp"
-        android:onClick="GenKey"
-        android:text="Enroll"
-        android:textColor="@android:color/white" />
-
-    <Spinner
-        android:id="@+id/spinner1"
+        android:text="@string/scep_server_url"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <EditText
+        android:id="@+id/editTextScepUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignParentLeft="true"
-        android:background="@color/background"
-        android:entries="@array/rsalen_arrays"
-        android:prompt="@string/rsa_prompt" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/spinner1"
-        android:layout_alignParentLeft="true"
-        android:text="Key Size"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/P12Password"
-        android:layout_alignParentLeft="true"
-        android:text="Import password"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
-    <EditText
-        android:id="@+id/Password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/TextView01"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="14dp"
-        android:background="@color/background"
         android:ems="10"
-        android:hint="Password Field"
-        android:inputType="textPassword"
-        android:text="F039A5C5FC7CAE1839DCF2A87154D197" />
+        android:hint="@string/scep_server_url"
+        android:inputType="textUri"
+        android:text="http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe" />
 
     <TextView
-        android:id="@+id/TextView02"
+        android:layout_marginTop="14dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/Password"
-        android:layout_alignParentLeft="true"
+        android:text="@string/subject_dn"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/TextView03"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/TextView02"
-        android:layout_alignParentLeft="true"
-        android:text="Enrollment Challenge Passphrase"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
     <EditText
-        android:id="@+id/P12Password"
-        android:layout_width="wrap_content"
+        android:id="@+id/exitTextCommonName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="14dp"
-        android:background="@color/background"
         android:ems="10"
-        android:hint="Password Field"
-        android:inputType="textPassword"
-        android:text="Password1!" />
-
-    <EditText
-        android:id="@+id/CommonName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/TextView03"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/background"
-        android:ems="10"
-        android:hint="Common name"
+        android:hint="@string/subject_dn"
         android:text="cn=MyDevice,ou=test,o=testco,c=US" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:layout_marginTop="14dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/CommonName"
-        android:layout_alignParentLeft="true"
-        android:text="Subject DN"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
-
+        android:text="@string/enrollment_challenge_passphrase"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     <EditText
-        android:id="@+id/ScepURL"
-        android:layout_width="wrap_content"
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="@color/background"
         android:ems="10"
-        android:hint="provide SCEP URL"
-        android:inputType="textUri"
-        android:text="http://pki.gordonyoung.us/certsrv/mscep/mscep.dll/pkiclient.exe" />
+        android:hint="@string/enrollment_challenge_passphrase"
+        android:inputType="textPassword"
+        android:text="3B78E1F19B0FF9F4" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:layout_marginTop="14dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ScepURL"
-        android:layout_alignParentLeft="true"
-        android:text="SCEP Server URL"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
+        android:text="@string/import_password"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <EditText
+        android:id="@+id/P12Password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/import_password"
+        android:inputType="textPassword"
+        android:text="Password1!" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_marginTop="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/key_size"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <Spinner
+        android:id="@+id/spinnerKeySize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/rsalen_arrays"
+        android:prompt="@string/key_size" />
+
+    <Button
+        android:id="@+id/buttonEnroll"
+        android:layout_marginTop="14dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="onClickEnroll"
+        android:text="@string/enroll" />
+
+</LinearLayout>

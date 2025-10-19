@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,35 +28,30 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void GenKey(View view) {
-
-	
-		TextView urI = (TextView) findViewById(R.id.ScepURL);
-		CharSequence sURI = urI.getText();
+	public void onClickEnroll(View view) {
+		TextView editTextUrl = findViewById(R.id.editTextScepUrl);
+		CharSequence sURI = editTextUrl.getText();
 		sURI.toString();
 
-		Spinner iKeyLen = (Spinner) findViewById(R.id.spinner1);
-		int isKeyLen = Integer.parseInt(String.valueOf(iKeyLen.getSelectedItem()));
+		Spinner spinnerKeyLen = findViewById(R.id.spinnerKeySize);
+		int isKeyLen = Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem()));
 
-		TextView tVCname = (TextView) findViewById(R.id.CommonName);
-		TextView tVPassword = (TextView) findViewById(R.id.Password);
+		TextView textViewCommonName = findViewById(R.id.exitTextCommonName);
+		TextView textViewPassword = findViewById(R.id.editTextPassword);
 
 		// enable some policies
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 
 		try {
-			byte[] keystore = ScepClient.CertReq(sURI.toString(), tVCname.getText().toString(), tVPassword.getText().toString(), isKeyLen);
+			byte[] keystore = ScepClient.CertReq(sURI.toString(), textViewCommonName.getText().toString(), textViewPassword.getText().toString(), isKeyLen);
 			
 			Intent intent = KeyChain.createInstallIntent();
 			intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
 			startActivity(intent);
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+
+		} catch(Exception e) {
+			CommonDialog.show(this, e.getClass().getName(), e.getMessage(), CommonDialog.Icon.ERROR, false);
 			e.printStackTrace();
 		}
 	}
