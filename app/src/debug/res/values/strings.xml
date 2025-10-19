@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
+</resources>
