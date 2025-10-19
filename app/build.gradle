@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "systems.sieber.droid_scep"
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
     }
