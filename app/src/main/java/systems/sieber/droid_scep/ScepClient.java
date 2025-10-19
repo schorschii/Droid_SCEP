@@ -45,7 +45,7 @@ import org.spongycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class ScepClient {
 
-    public static byte[] CertReq(String enrollentURL, String entityName, String tVPassword, int isKeyLen)
+    public static byte[] CertReq(String enrollentURL, String entityName, String enrollmentChallenge, int isKeyLen)
             throws ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
 
         //load SpongyCastle
@@ -82,7 +82,7 @@ public class ScepClient {
                 entity, keyPair.getPublic());
 
         // set the password
-        DERPrintableString password = new DERPrintableString(tVPassword);
+        DERPrintableString password = new DERPrintableString(enrollmentChallenge);
         crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_challengePassword,
                 password);
 

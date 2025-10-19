@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <restriction
+        android:key="scep-url"
+        android:title="SCEP Server URL"
+        android:restrictionType="string" />
+    <restriction
+        android:key="subject-dn"
+        android:title="Subject DN"
+        android:restrictionType="string" />
+    <restriction
+        android:key="enrollment-challenge"
+        android:title="Enrollment Challenge Password"
+        android:restrictionType="string" />
+
+</restrictions>

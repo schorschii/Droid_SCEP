@@ -12,6 +12,8 @@
     <string name="enroll">Enroll</string>
     <string name="ok">OK</string>
 
+    <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
+    <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
     <string-array name="rsalen_arrays" translatable="false">
         <item>2048</item>
         <item>4096</item>
