@@ -14,6 +14,10 @@
         android:title="Enrollment Challenge Password"
         android:restrictionType="string" />
     <restriction
+        android:key="enrollment-profile"
+        android:title="Enrollment Profile Name"
+        android:restrictionType="string" />
+    <restriction
         android:key="keystore-password"
         android:title="Keystore/Import Password"
         android:restrictionType="string" />

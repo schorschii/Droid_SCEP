@@ -7,16 +7,23 @@
     <string name="key_size">Key Size</string>
     <string name="import_password">Keystore/Import Password</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge Passphrase</string>
+    <string name="enrollment_profile">Enrollment Profile</string>
     <string name="subject_dn">Subject DN</string>
     <string name="scep_server_url">SCEP Server URL</string>
-    <string name="enroll">Enroll</string>
+    <string name="request">Request</string>
+    <string name="transaction_id">Transaction ID</string>
+    <string name="poll">Poll</string>
     <string name="ok">OK</string>
+    <string name="no_request_pending">No request pending</string>
     <string name="bad_request_help">Server declined the SCEP request. Please check your enrollment challenge password and try again.</string>
+    <string name="request_pending_help">Your certificate request is currently pending. Please come back later to download your certificate after the administrator approved the request.</string>
 
     <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
     <string name="default_keystore_alias" translatable="false">SCEP Certificate</string>
+    <string name="default_enrollment_profile" translatable="false">NDESCA</string>
     <string name="default_rsa_len" translatable="false">4096</string>
+    <string name="optional">(optional)</string>
     <string-array name="rsa_lens" translatable="false">
         <item>1024</item>
         <item>2048</item>
