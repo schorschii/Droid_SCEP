@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">Droid_SCEP3</string>
+    <string name="app_name" translatable="false">Droid_SCEP</string>
 
     <string name="about">About</string>
     <string name="version">Version</string>

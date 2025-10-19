@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="about">Über</string>
+    <string name="version">Version</string>
+    <string name="key_size">Schlüssellänge</string>
+    <string name="import_password">Keystore-/Import-Passwort</string>
+    <string name="enrollment_challenge_passphrase">Enrollment Challenge-Passphrase</string>
+    <string name="enrollment_profile">Enrollment-Profil</string>
+    <string name="subject_dn">Subject-DN</string>
+    <string name="scep_server_url">SCEP-Server-URL</string>
+    <string name="request">Anfrage senden</string>
+    <string name="transaction_id">Transaktions-ID</string>
+    <string name="poll">Zertifikat abrufen</string>
+    <string name="ok">OK</string>
+    <string name="no_request_pending">Es steht keine Anfrage aus</string>
+    <string name="bad_request_help">Der Server hat die SCEP-Anfrage abgelehnt. Bitte prüfen Sie die Enrollment-Passphrase und versuchen Sie es erneut.</string>
+    <string name="request_pending_help">Ihre Zertifikatsanfrage steht derzeit aus. Bitte versuchen Sie später erneut das Zertifikat herunterzuladen, nachdem der Administrator die Anfrage genehmigt hat.</string>
+    <string name="optional">(optional)</string>
+    <string name="fork_based_on">Ein Fork basierend auf:</string>
+    <string name="general_settings">Allgemeine Einstellungen</string>
+    <string name="new_request">Neue Anfrage</string>
+    <string name="poll_pending_request">Ausstehende Anfrage abrufen</string>
+
+</resources>
