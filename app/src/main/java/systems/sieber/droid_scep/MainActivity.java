@@ -87,6 +87,9 @@ public class MainActivity extends Activity {
 			intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
 			startActivity(intent);
 
+		} catch(ScepClient.BadRequestException e) {
+			CommonDialog.show(this, e.getClass().getName(), getString(R.string.bad_request_help), CommonDialog.Icon.ERROR, false);
+			e.printStackTrace();
 		} catch(Exception e) {
 			CommonDialog.show(this, e.getClass().getName(), e.getMessage(), CommonDialog.Icon.ERROR, false);
 			e.printStackTrace();

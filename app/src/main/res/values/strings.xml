@@ -11,6 +11,7 @@
     <string name="scep_server_url">SCEP Server URL</string>
     <string name="enroll">Enroll</string>
     <string name="ok">OK</string>
+    <string name="bad_request_help">Server declined the SCEP request. Please check your enrollment challenge password and try again.</string>
 
     <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>

@@ -29,6 +29,7 @@ import org.jscep.client.EnrollmentResponse;
 import org.jscep.client.verification.CertificateVerifier;
 import org.jscep.client.verification.OptimisticCertificateVerifier;
 
+import org.jscep.transaction.FailInfo;
 import org.jscep.transaction.TransactionException;
 import org.spongycastle.asn1.DERPrintableString;
 import org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -45,8 +46,10 @@ import org.spongycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 public class ScepClient {
 
+    public static class BadRequestException extends Exception {}
+
     public static byte[] CertReq(String enrollentURL, String entityName, String enrollmentChallenge, int isKeyLen, String keystoreAlias, String keystorePassword)
-            throws ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
+            throws BadRequestException, ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
 
         // load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
@@ -91,7 +94,10 @@ public class ScepClient {
         Certificate certz[] = new Certificate[1];
         // Automatic enrollment, so this should be issued
         if(!response.isSuccess()) {
-            throw new ClientException(response.getFailInfo().toString());
+            if(response.getFailInfo() == FailInfo.badRequest)
+                throw new BadRequestException();
+            else
+                throw new ClientException(response.getFailInfo().toString());
         }
 
         CertStore store = response.getCertStore();
