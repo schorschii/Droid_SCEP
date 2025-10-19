@@ -2,28 +2,36 @@
 <resources>
 
     <string name="app_name" translatable="false">Droid_SCEP3</string>
-    <string name="menu_settings">Settings</string>
 
+    <string name="about">About</string>
+    <string name="version">Version</string>
     <string name="key_size">Key Size</string>
     <string name="import_password">Keystore/Import Password</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge Passphrase</string>
     <string name="enrollment_profile">Enrollment Profile</string>
     <string name="subject_dn">Subject DN</string>
     <string name="scep_server_url">SCEP Server URL</string>
-    <string name="request">Request</string>
+    <string name="request">Send Request</string>
     <string name="transaction_id">Transaction ID</string>
-    <string name="poll">Poll</string>
+    <string name="poll">Poll Certificate</string>
     <string name="ok">OK</string>
     <string name="no_request_pending">No request pending</string>
     <string name="bad_request_help">Server declined the SCEP request. Please check your enrollment challenge password and try again.</string>
     <string name="request_pending_help">Your certificate request is currently pending. Please come back later to download your certificate after the administrator approved the request.</string>
+    <string name="optional">(optional)</string>
+    <string name="fork_based_on">A fork based on:</string>
+    <string name="general_settings">General Settings</string>
+    <string name="new_request">New Request</string>
+    <string name="poll_pending_request">Poll Pending Request</string>
 
+    <string name="link_github">https://github.com/schorschii/Droid_SCEP</string>
+    <string name="link_github_base">https://github.com/gjyoung1974/Droid_Scep2</string>
     <string name="default_server_url" translatable="false">https://SERVERNAME/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
     <string name="default_keystore_alias" translatable="false">SCEP Certificate</string>
-    <string name="default_enrollment_profile" translatable="false">NDESCA</string>
+    <string name="default_enrollment_profile" translatable="false" />
     <string name="default_rsa_len" translatable="false">4096</string>
-    <string name="optional">(optional)</string>
+
     <string-array name="rsa_lens" translatable="false">
         <item>1024</item>
         <item>2048</item>

@@ -4,6 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+
+        <!-- No Action Bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>

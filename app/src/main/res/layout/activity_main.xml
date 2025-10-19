@@ -1,157 +1,179 @@
-<ScrollView
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="14dp"
     tools:context=".MainActivity">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:text="General Settings" />
-
-    <TextView
-        android:id="@+id/textViewScepUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scep_server_url"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/editTextScepUrl"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:labelFor="@id/textViewScepUrl"
-        android:inputType="textUri"
-        android:text="@string/default_server_url" />
+        android:fitsSystemWindows="true">
 
-    <TextView
-        android:layout_marginTop="28dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:text="New Request" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <TextView
-        android:id="@+id/textViewCommonName"
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/subject_dn"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/exitTextCommonName"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:labelFor="@id/textViewCommonName"
-        android:text="@string/default_subject_dn" />
+        android:layout_height="match_parent"
+        android:padding="14dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/textViewEnrollmentChallenge"
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enrollment_challenge_passphrase"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/editTextEnrollmentChallenge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:labelFor="@id/textViewEnrollmentChallenge"
-        android:inputType="textPassword"
-        android:text="3B78E1F19B0FF9F4" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewEnrollmentProfile"
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enrollment_profile"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/editTextEnrollmentProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:labelFor="@id/textViewEnrollmentProfile"
-        android:hint="@string/optional"
-        android:text="@string/default_enrollment_profile" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/general_settings"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-    <TextView
-        android:id="@+id/textViewKeystorePassword"
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/import_password"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/editTextKeystorePassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:labelFor="@id/textViewKeystorePassword"
-        android:inputType="textPassword"
-        android:hint="@string/optional" />
+            <TextView
+                android:id="@+id/textViewScepUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/scep_server_url"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/editTextScepUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textUri"
+                android:labelFor="@id/textViewScepUrl"
+                android:text="@string/default_server_url" />
 
-    <TextView
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/key_size"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <Spinner
-        android:id="@+id/spinnerKeySize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/rsa_lens"
-        android:prompt="@string/key_size" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/new_request"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-    <Button
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="onClickRequest"
-        android:text="@string/request" />
+            <TextView
+                android:id="@+id/textViewCommonName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/subject_dn"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/exitTextCommonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:labelFor="@id/textViewCommonName"
+                android:text="@string/default_subject_dn" />
 
-    <TextView
-        android:layout_marginTop="28dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:text="Poll Pending Request" />
+            <TextView
+                android:id="@+id/textViewEnrollmentChallenge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/enrollment_challenge_passphrase"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/editTextEnrollmentChallenge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:labelFor="@id/textViewEnrollmentChallenge"
+                android:text="3B78E1F19B0FF9F4" />
 
-    <TextView
-        android:id="@+id/textViewTransactionId"
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/transaction_id"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-    <EditText
-        android:id="@+id/exitTextTransactionId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:ems="10"
-        android:labelFor="@id/textViewTransactionId" />
+            <TextView
+                android:id="@+id/textViewEnrollmentProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/enrollment_profile"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/editTextEnrollmentProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/optional"
+                android:labelFor="@id/textViewEnrollmentProfile"
+                android:text="@string/default_enrollment_profile" />
 
-    <Button
-        android:layout_marginTop="14dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="onClickPoll"
-        android:text="@string/poll" />
+            <TextView
+                android:id="@+id/textViewKeystorePassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/import_password"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/editTextKeystorePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/optional"
+                android:inputType="textPassword"
+                android:labelFor="@id/textViewKeystorePassword" />
 
-</LinearLayout>
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/key_size"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <Spinner
+                android:id="@+id/spinnerKeySize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/rsa_lens"
+                android:prompt="@string/key_size" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="14dp"
+                android:onClick="onClickRequest"
+                android:text="@string/request" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/poll_pending_request"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+            <TextView
+                android:id="@+id/textViewTransactionId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/transaction_id"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/exitTextTransactionId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:labelFor="@id/textViewTransactionId" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="14dp"
+                android:onClick="onClickPoll"
+                android:text="@string/poll" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

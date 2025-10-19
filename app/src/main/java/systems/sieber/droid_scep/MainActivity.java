@@ -1,6 +1,5 @@
 package systems.sieber.droid_scep;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.RestrictionsManager;
@@ -10,12 +9,16 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.security.KeyChain;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-public class MainActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+public class MainActivity extends AppCompatActivity {
 
 	EditText editTextUrl;
 	EditText editTextCommonName;
@@ -33,6 +36,11 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// init toolbar
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
+		// find views
 		editTextUrl = findViewById(R.id.editTextScepUrl);
 		editTextCommonName = findViewById(R.id.exitTextCommonName);
 		editTextEnrollmentChallenge = findViewById(R.id.editTextEnrollmentChallenge);
@@ -41,11 +49,12 @@ public class MainActivity extends Activity {
 		editTextTransactionId = findViewById(R.id.exitTextTransactionId);
 		spinnerKeyLen = findViewById(R.id.spinnerKeySize);
 
+		// load settings
 		sharedPref = getSharedPreferences("temp-store", Context.MODE_PRIVATE);
 		editTextTransactionId.setText( sharedPref.getString("tid", "") );
-
 		keystoreAlias = getString(R.string.default_keystore_alias);
 
+		// apply MDM policies
 		applyPolicies();
 	}
 
@@ -53,6 +62,20 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+			case R.id.action_about:
+				Intent i = new Intent(this, AboutActivity.class);
+				startActivity(i);
+				break;
+		}
 		return true;
 	}
 
