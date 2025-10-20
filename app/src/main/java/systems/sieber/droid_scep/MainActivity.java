@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.RestrictionsManager;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -32,6 +34,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 	Button buttonRequest;
 	Button buttonPoll;
 	EditText editTextUrl;
+	RadioButton radioButtonImportToAndroidKeystore;
+	RadioButton radioButtonSaveToFile;
 	EditText editTextCommonName;
 	EditText editTextEnrollmentChallenge;
 	EditText editTextEnrollmentProfile;
@@ -52,8 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
 	SharedPreferences sharedPrefTemp;
 	SharedPreferences sharedPrefSettings;
+
 	ActivityResultLauncher<Intent> arlInstallCertificate;
+	ActivityResultLauncher<Intent> arlSaveCertificate;
 	String tempAlias;
+	byte[] tempBytes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 		buttonRequest = findViewById(R.id.buttonRequest);
 		buttonPoll = findViewById(R.id.buttonPoll);
 		editTextUrl = findViewById(R.id.editTextScepUrl);
+		radioButtonImportToAndroidKeystore = findViewById(R.id.radioButtonImportToAndroidKeystore);
+		radioButtonSaveToFile = findViewById(R.id.radioButtonSaveToFile);
 		editTextCommonName = findViewById(R.id.exitTextCommonName);
 		editTextEnrollmentChallenge = findViewById(R.id.editTextEnrollmentChallenge);
 		editTextEnrollmentProfile = findViewById(R.id.editTextEnrollmentProfile);
@@ -79,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 		sharedPrefTemp = getSharedPreferences(SHARED_PREF_TEMP_STORE, Context.MODE_PRIVATE);
 		sharedPrefSettings = getSharedPreferences(SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
 		editTextUrl.setText( sharedPrefSettings.getString("scep-url", getString(R.string.default_server_url)) );
+		if(sharedPrefSettings.getBoolean("save-to-file", false)) {
+			radioButtonSaveToFile.setChecked(true);
+		} else {
+			radioButtonImportToAndroidKeystore.setChecked(true);
+		}
 		editTextCommonName.setText( sharedPrefSettings.getString("subject-dn", getString(R.string.default_subject_dn)) );
 		editTextEnrollmentChallenge.setText( sharedPrefSettings.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
 		editTextEnrollmentProfile.setText( sharedPrefSettings.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
@@ -122,6 +137,23 @@ public class MainActivity extends AppCompatActivity {
 							}
 						});
 						ad.show();
+					}
+				});
+		arlSaveCertificate = registerForActivityResult(
+				new ActivityResultContracts.StartActivityForResult(),
+				new ActivityResultCallback<ActivityResult>() {
+					@Override
+					public void onActivityResult(ActivityResult result) {
+						if(result.getResultCode() != Activity.RESULT_OK) return;
+						try {
+							Uri uri = result.getData().getData();
+							OutputStream output = me.getContentResolver().openOutputStream(uri);
+							output.write(tempBytes);
+							output.flush();
+							output.close();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
 				});
 
@@ -170,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
 		// save settings
 		SharedPreferences.Editor edit = sharedPrefSettings.edit();
 		edit.putString("scep-url", editTextUrl.getText().toString());
+		edit.putBoolean("save-to-file", radioButtonSaveToFile.isChecked());
 		edit.putString("subject-dn", editTextCommonName.getText().toString());
 		edit.putString("enrollment-challenge", editTextEnrollmentChallenge.getText().toString());
 		edit.putString("enrollment-profile", editTextEnrollmentProfile.getText().toString());
@@ -186,6 +219,16 @@ public class MainActivity extends AppCompatActivity {
 			if(url != null) {
 				editTextUrl.setText(url);
 				editTextUrl.setEnabled(false);
+			}
+
+			if(appRestrictions.containsKey("save-to-file")) {
+				if(appRestrictions.getBoolean("save-to-file", false)) {
+					radioButtonSaveToFile.setChecked(true);
+				} else {
+					radioButtonImportToAndroidKeystore.setChecked(true);
+				}
+				radioButtonSaveToFile.setEnabled(false);
+				radioButtonImportToAndroidKeystore.setEnabled(false);
 			}
 
 			String subjectDn = appRestrictions.getString("subject-dn", null);
@@ -434,10 +477,19 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void installCert(byte[] keystore, String alias) {
-		tempAlias = alias;
-		Intent intent = KeyChain.createInstallIntent();
-		intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
-		arlInstallCertificate.launch(intent);
+		if(radioButtonSaveToFile.isChecked()) {
+			tempBytes = keystore;
+			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("application/x-pkcs12");
+			intent.putExtra(Intent.EXTRA_TITLE, alias+".p12");
+			arlSaveCertificate.launch(intent);
+		} else {
+			tempAlias = alias;
+			Intent intent = KeyChain.createInstallIntent();
+			intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
+			arlInstallCertificate.launch(intent);
+		}
 	}
 
 }

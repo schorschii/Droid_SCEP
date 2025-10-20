@@ -4,7 +4,7 @@
     <string name="about">Über</string>
     <string name="version">Version</string>
     <string name="key_size">Schlüssellänge</string>
-    <string name="import_password">Keystore-/Import-Passwort</string>
+    <string name="import_password">Keystore-/Datei-Passwort</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge-Passphrase</string>
     <string name="enrollment_profile">Enrollment-Profil</string>
     <string name="subject_dn">Subject-DN</string>
@@ -33,5 +33,8 @@
     <string name="notification_permission">Benachrichtigungs-Berechtigung…</string>
     <string name="add">Hinzufügen…</string>
     <string name="add_to_monitoring">Möchten Sie das Ablaufdatum des neu hinzugefügten Zertifikates überwachen?</string>
+    <string name="output">Ausgabe</string>
+    <string name="import_to_android_keystore">In Android-Keystore importieren</string>
+    <string name="save_to_file">In Datei speichern</string>
 
 </resources>

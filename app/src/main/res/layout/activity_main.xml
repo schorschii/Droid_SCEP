@@ -54,6 +54,48 @@
                 android:text="@string/default_server_url" />
 
             <TextView
+                android:id="@+id/textViewOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/output"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                    <RadioButton
+                        android:id="@+id/radioButtonImportToAndroidKeystore"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/import_to_android_keystore"/>
+                    <RadioButton
+                        android:id="@+id/radioButtonSaveToFile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/save_to_file"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textViewKeystorePassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/import_password"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/editTextKeystorePassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/optional"
+                android:inputType="textPassword"
+                android:labelFor="@id/textViewKeystorePassword" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
@@ -106,22 +148,6 @@
                 android:hint="@string/optional"
                 android:labelFor="@id/textViewEnrollmentProfile"
                 android:text="@string/default_enrollment_profile" />
-
-            <TextView
-                android:id="@+id/textViewKeystorePassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/import_password"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/editTextKeystorePassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/optional"
-                android:inputType="textPassword"
-                android:labelFor="@id/textViewKeystorePassword" />
 
             <TextView
                 android:layout_width="wrap_content"

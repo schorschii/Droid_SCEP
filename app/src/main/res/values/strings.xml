@@ -6,7 +6,7 @@
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="key_size">Key Size</string>
-    <string name="import_password">Keystore/Import Password</string>
+    <string name="import_password">Keystore/File Password</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge Passphrase</string>
     <string name="enrollment_profile">Enrollment Profile</string>
     <string name="subject_dn">Subject DN</string>
@@ -35,6 +35,9 @@
     <string name="notification_permission">Notification Permission…</string>
     <string name="add">Add…</string>
     <string name="add_to_monitoring">Do you want to monitor the expiration date of the newly certificate?</string>
+    <string name="output">Output</string>
+    <string name="import_to_android_keystore">Import to Android keystore</string>
+    <string name="save_to_file">Save to file</string>
 
     <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
     <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>

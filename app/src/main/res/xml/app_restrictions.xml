@@ -6,6 +6,10 @@
         android:title="SCEP Server URL"
         android:restrictionType="string" />
     <restriction
+        android:key="save-to-file"
+        android:title="Output to file"
+        android:restrictionType="bool" />
+    <restriction
         android:key="subject-dn"
         android:title="Subject DN"
         android:restrictionType="string" />
