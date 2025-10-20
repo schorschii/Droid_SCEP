@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.security.KeyChain;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,10 +21,23 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+	static String SHARED_PREF_TEMP_STORE = "temp-store";
+	static String SHARED_PREF_SETTINGS = "settings";
 
 	Button buttonRequest;
 	Button buttonPoll;
@@ -37,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 	String keystoreAlias;
 
 	SharedPreferences sharedPref;
+	ActivityResultLauncher<Intent> arlInstallCertificate;
+	String tempAlias;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +75,64 @@ public class MainActivity extends AppCompatActivity {
 		spinnerKeyLen = findViewById(R.id.spinnerKeySize);
 
 		// load settings
-		sharedPref = getSharedPreferences("temp-store", Context.MODE_PRIVATE);
+		sharedPref = getSharedPreferences(SHARED_PREF_TEMP_STORE, Context.MODE_PRIVATE);
 		editTextTransactionId.setText( sharedPref.getString("tid", "") );
 		keystoreAlias = getString(R.string.default_keystore_alias);
 
 		// apply MDM policies
 		applyPolicies();
-	}
+
+		// init result launcher
+		AppCompatActivity me = this;
+		arlInstallCertificate = registerForActivityResult(
+				new ActivityResultContracts.StartActivityForResult(),
+				new ActivityResultCallback<ActivityResult>() {
+					@Override
+					public void onActivityResult(ActivityResult result) {
+						if(result.getResultCode() != Activity.RESULT_OK) return;
+						AlertDialog.Builder ad = new AlertDialog.Builder(me);
+						ad.setMessage(getString(R.string.add_to_monitoring));
+						ad.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+								// add cert to monitoring
+								SharedPreferences sharedPrefSettings = getSharedPreferences(SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
+								String oldAliases = sharedPrefSettings.getString("monitor-aliases", "");
+								SettingsActivity.askAddCertMonitoring(me, oldAliases, tempAlias, new SettingsActivity.KeySelectedCallback() {
+									@Override
+									public void selected(String aliases) {
+										SharedPreferences.Editor edit = sharedPrefSettings.edit();
+										edit.putString("monitor-aliases", aliases);
+										edit.apply();
+									}
+								});
+							}
+						});
+						ad.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+							}
+						});
+						ad.show();
+					}
+				});
+
+		// init cert check background worker
+		PeriodicWorkRequest saveRequest =
+				new PeriodicWorkRequest.Builder(CertWatcher.class, 1, TimeUnit.DAYS)
+						.build();
+		WorkManager wm = WorkManager.getInstance(this);
+		wm.enqueueUniquePeriodicWork("certCheck", ExistingPeriodicWorkPolicy.REPLACE, saveRequest);
+
+        try {
+            for(WorkInfo wi : wm.getWorkInfosByTag(CertWatcher.class.getName()).get()) {
+                Log.i("WORK", wi.toString());
+            }
+        } catch(Exception ignored) { }
+
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,9 +147,11 @@ public class MainActivity extends AppCompatActivity {
 			case android.R.id.home:
 				finish();
 				break;
+			case R.id.action_settings:
+				startActivity(new Intent(this, SettingsActivity.class));
+				break;
 			case R.id.action_about:
-				Intent i = new Intent(this, AboutActivity.class);
-				startActivity(i);
+				startActivity(new Intent(this, AboutActivity.class));
 				break;
 		}
 		return true;
@@ -94,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 			Bundle appRestrictions = restrictionsMgr.getApplicationRestrictions();
 			editTextUrl.setText( appRestrictions.getString("scep-url", getString(R.string.default_server_url)) );
 			editTextCommonName.setText( appRestrictions.getString("subject-dn", getString(R.string.default_subject_dn)) );
-			editTextEnrollmentChallenge.setText( appRestrictions.getString("enrollment-challenge", "1FDE8ED526747EADB0681A952963CDE4") );
+			editTextEnrollmentChallenge.setText( appRestrictions.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
 			editTextEnrollmentProfile.setText( appRestrictions.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
 			editTextKeystorePassword.setText( appRestrictions.getString("keystore-password", "") );
 			keystoreAlias = appRestrictions.getString("keystore-alias", keystoreAlias);
@@ -167,9 +236,7 @@ public class MainActivity extends AppCompatActivity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Intent intent = KeyChain.createInstallIntent();
-							intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
-							startActivity(intent);
+							installCert(keystore, keystoreAlias);
 						}
 					});
 
@@ -261,9 +328,7 @@ public class MainActivity extends AppCompatActivity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							Intent intent = KeyChain.createInstallIntent();
-							intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
-							startActivity(intent);
+							installCert(keystore, keystoreAlias);
 
 							// clear temp data
 							editTextTransactionId.setText("");
@@ -313,6 +378,13 @@ public class MainActivity extends AppCompatActivity {
 				}
 			}
 		});
+	}
+
+	private void installCert(byte[] keystore, String alias) {
+		tempAlias = alias;
+		Intent intent = KeyChain.createInstallIntent();
+		intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
+		arlInstallCertificate.launch(intent);
 	}
 
 }

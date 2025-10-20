@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_server_url" translatable="false">http://10.99.0.102/certsrv/mscep/mscep.dll/pkiclient.exe</string>
+    <string name="default_enrollment_challenge" translatable="false">1FDE8ED526747EADB0681A952963CDE4</string>
 </resources>

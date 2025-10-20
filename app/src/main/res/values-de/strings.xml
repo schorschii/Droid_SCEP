@@ -26,5 +26,12 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="please_wait">Bitte warten…</string>
+    <string name="certificates_to_monitor">Zu überwachende Zertifikate (ein Alias pro Zeile)</string>
+    <string name="days_before_warning">Tage vor Warnung</string>
+    <string name="save">Speichern</string>
+    <string name="settings">Einstellungen</string>
+    <string name="notification_permission">Benachrichtigungs-Berechtigung…</string>
+    <string name="add">Hinzufügen…</string>
+    <string name="add_to_monitoring">Möchten Sie das Ablaufdatum des neu hinzugefügten Zertifikates überwachen?</string>
 
 </resources>
