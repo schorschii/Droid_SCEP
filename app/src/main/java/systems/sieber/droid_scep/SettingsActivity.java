@@ -90,7 +90,12 @@ public class SettingsActivity  extends AppCompatActivity {
          askAddCertMonitoring(this, editTextMonitorAliases.getText().toString(), null, new KeySelectedCallback() {
              @Override
              public void selected(String aliases) {
-                 editTextMonitorAliases.setText(aliases);
+                 runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         editTextMonitorAliases.setText(aliases);
+                     }
+                 });
              }
          });
     }
