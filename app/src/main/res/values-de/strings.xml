@@ -18,6 +18,7 @@
     <string name="request_pending_help">Ihre Zertifikatsanfrage steht derzeit aus. Bitte versuchen Sie später erneut das Zertifikat herunterzuladen, nachdem der Administrator die Anfrage genehmigt hat.</string>
     <string name="optional">(optional)</string>
     <string name="fork_based_on">Ein Fork basierend auf:</string>
+    <string name="using_the_jscep_library">Verwendet die jscep-Bibliothek:</string>
     <string name="general_settings">Allgemeine Einstellungen</string>
     <string name="new_request">Neue Anfrage</string>
     <string name="poll_pending_request">Ausstehende Anfrage abrufen</string>

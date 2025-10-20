@@ -20,6 +20,7 @@
     <string name="request_pending_help">Your certificate request is currently pending. Please come back later to download your certificate after the administrator approved the request.</string>
     <string name="optional">(optional)</string>
     <string name="fork_based_on">A fork based on:</string>
+    <string name="using_the_jscep_library">Using the jscep library:</string>
     <string name="general_settings">General Settings</string>
     <string name="new_request">New Request</string>
     <string name="poll_pending_request">Poll Pending Request</string>
@@ -41,6 +42,7 @@
 
     <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
     <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>
+    <string name="link_github_jscep" translatable="false">https://github.com/seize-the-dave/jscep</string>
     <string name="default_server_url" translatable="false">https://SERVERNAME/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
     <string name="default_keystore_alias" translatable="false">SCEP Certificate</string>

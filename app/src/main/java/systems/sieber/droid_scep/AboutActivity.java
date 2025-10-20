@@ -72,4 +72,9 @@ public class AboutActivity extends AppCompatActivity {
         startActivity(browserIntent);
     }
 
+    public void onClickGithubJscep(View v) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.link_github_jscep)));
+        startActivity(browserIntent);
+    }
+
 }
