@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
 	Spinner spinnerKeyLen;
 	String keystoreAlias;
 
-	SharedPreferences sharedPref;
+	SharedPreferences sharedPrefTemp;
+	SharedPreferences sharedPrefSettings;
 	ActivityResultLauncher<Intent> arlInstallCertificate;
 	String tempAlias;
 
@@ -75,8 +76,14 @@ public class MainActivity extends AppCompatActivity {
 		spinnerKeyLen = findViewById(R.id.spinnerKeySize);
 
 		// load settings
-		sharedPref = getSharedPreferences(SHARED_PREF_TEMP_STORE, Context.MODE_PRIVATE);
-		editTextTransactionId.setText( sharedPref.getString("tid", "") );
+		sharedPrefTemp = getSharedPreferences(SHARED_PREF_TEMP_STORE, Context.MODE_PRIVATE);
+		sharedPrefSettings = getSharedPreferences(SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
+		editTextUrl.setText( sharedPrefSettings.getString("scep-url", getString(R.string.default_server_url)) );
+		editTextCommonName.setText( sharedPrefSettings.getString("subject-dn", getString(R.string.default_subject_dn)) );
+		editTextEnrollmentChallenge.setText( sharedPrefSettings.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
+		editTextEnrollmentProfile.setText( sharedPrefSettings.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
+		setSpinnerDefault(spinnerKeyLen, String.valueOf(sharedPrefSettings.getInt("rsa-key-length", Integer.parseInt(getString(R.string.default_rsa_len)))));
+		editTextTransactionId.setText( sharedPrefTemp.getString("tid", "") );
 		keystoreAlias = getString(R.string.default_keystore_alias);
 
 		// apply MDM policies
@@ -97,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.dismiss();
 								// add cert to monitoring
-								SharedPreferences sharedPrefSettings = getSharedPreferences(SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
 								String oldAliases = sharedPrefSettings.getString("monitor-aliases", "");
 								SettingsActivity.askAddCertMonitoring(me, oldAliases, tempAlias, new SettingsActivity.KeySelectedCallback() {
 									@Override
@@ -157,31 +163,78 @@ public class MainActivity extends AppCompatActivity {
 		return true;
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		// save settings
+		SharedPreferences.Editor edit = sharedPrefSettings.edit();
+		edit.putString("scep-url", editTextUrl.getText().toString());
+		edit.putString("subject-dn", editTextCommonName.getText().toString());
+		edit.putString("enrollment-challenge", editTextEnrollmentChallenge.getText().toString());
+		edit.putString("enrollment-profile", editTextEnrollmentProfile.getText().toString());
+		edit.putInt("rsa-key-length", Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem())));
+		edit.apply();
+	}
+
 	private void applyPolicies() {
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			RestrictionsManager restrictionsMgr = (RestrictionsManager) getSystemService(Context.RESTRICTIONS_SERVICE);
 			Bundle appRestrictions = restrictionsMgr.getApplicationRestrictions();
-			editTextUrl.setText( appRestrictions.getString("scep-url", getString(R.string.default_server_url)) );
-			editTextCommonName.setText( appRestrictions.getString("subject-dn", getString(R.string.default_subject_dn)) );
-			editTextEnrollmentChallenge.setText( appRestrictions.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
-			editTextEnrollmentProfile.setText( appRestrictions.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
-			editTextKeystorePassword.setText( appRestrictions.getString("keystore-password", "") );
+
+			String url = appRestrictions.getString("scep-url", null);
+			if(url != null) {
+				editTextUrl.setText(url);
+				editTextUrl.setEnabled(false);
+			}
+
+			String subjectDn = appRestrictions.getString("subject-dn", null);
+			if(subjectDn != null) {
+				editTextCommonName.setText(subjectDn);
+				editTextCommonName.setEnabled(false);
+			}
+
+			String enrollmentChallenge = appRestrictions.getString("enrollment-challenge", null);
+			if(enrollmentChallenge != null) {
+				editTextEnrollmentChallenge.setText(enrollmentChallenge);
+				editTextEnrollmentChallenge.setEnabled(false);
+			}
+
+			String enrollmentProfile = appRestrictions.getString("enrollment-profile", null);
+			if(enrollmentProfile != null) {
+				editTextEnrollmentProfile.setText(enrollmentProfile);
+				editTextEnrollmentProfile.setEnabled(false);
+			}
+
+			String keystorePassword = appRestrictions.getString("keystore-password", null);
+			if(keystorePassword != null) {
+				editTextKeystorePassword.setText(keystorePassword);
+				editTextKeystorePassword.setEnabled(false);
+			}
+
 			keystoreAlias = appRestrictions.getString("keystore-alias", keystoreAlias);
 
-			String defaultRsaKeyLen = String.valueOf( appRestrictions.getInt("rsa-key-length", Integer.parseInt(getString(R.string.default_rsa_len))) );
-			SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
-			for(int i = 0; i < adapter.getCount(); i++) {
-				if(adapter.getItem(i).toString().equals(defaultRsaKeyLen)) {
-					spinnerKeyLen.setSelection(i);
-				}
+			int defaultRsaKeyLenInt = appRestrictions.getInt("rsa-key-length", 0);
+			if(defaultRsaKeyLenInt > 0) {
+				setSpinnerDefault(spinnerKeyLen, String.valueOf(defaultRsaKeyLenInt));
+				spinnerKeyLen.setEnabled(false);
+			}
+		}
+	}
+
+	private void setSpinnerDefault(Spinner s, String def) {
+		SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
+		for(int i = 0; i < adapter.getCount(); i++) {
+			if(adapter.getItem(i).toString().equals(def)) {
+				spinnerKeyLen.setSelection(i);
 			}
 		}
 	}
 
 	public void onClickRequest(View view) {
-		if(sharedPref.getString("cert", "").isEmpty()
-				|| sharedPref.getString("key", "").isEmpty()
-				|| sharedPref.getString("tid", "").isEmpty()) {
+		if(sharedPrefTemp.getString("cert", "").isEmpty()
+		|| sharedPrefTemp.getString("key", "").isEmpty()
+		|| sharedPrefTemp.getString("tid", "").isEmpty()) {
 			request();
 		} else {
 			AlertDialog.Builder ad = new AlertDialog.Builder(this);
@@ -241,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 					});
 
 				} catch(ScepClient.RequestPendingException e) {
-					SharedPreferences.Editor editor = sharedPref.edit();
+					SharedPreferences.Editor editor = sharedPrefTemp.edit();
 					editor.putString("cert", e.getCertPem());
 					editor.putString("key", e.getKeyPem());
 					editor.putString("tid", e.getTransactionId());
@@ -286,9 +339,9 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void onClickPoll(View view) {
-		if(sharedPref.getString("cert", "").isEmpty()
-		|| sharedPref.getString("key", "").isEmpty()
-		|| sharedPref.getString("tid", "").isEmpty()) {
+		if(sharedPrefTemp.getString("cert", "").isEmpty()
+		|| sharedPrefTemp.getString("key", "").isEmpty()
+		|| sharedPrefTemp.getString("tid", "").isEmpty()) {
 			CommonDialog.show(this, getString(R.string.no_request_pending), "", CommonDialog.Icon.WARN, false);
 			return;
 		}
@@ -309,16 +362,16 @@ public class MainActivity extends AppCompatActivity {
 				try {
 					byte[] keystore = ScepClient.CertPoll(
 							sURI.toString(),
-							sharedPref.getString("cert", ""),
-							sharedPref.getString("key", ""),
+							sharedPrefTemp.getString("cert", ""),
+							sharedPrefTemp.getString("key", ""),
 							editTextCommonName.getText().toString(),
-							sharedPref.getString("tid", ""),
+							sharedPrefTemp.getString("tid", ""),
 							keystoreAlias,
 							editTextKeystorePassword.getText().toString()
 					);
 
 					// clear temp data
-					SharedPreferences.Editor editor = sharedPref.edit();
+					SharedPreferences.Editor editor = sharedPrefTemp.edit();
 					editor.remove("cert");
 					editor.remove("key");
 					editor.remove("tid");
@@ -336,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
 					});
 
 				} catch(ScepClient.RequestPendingException e) {
-					SharedPreferences.Editor editor = sharedPref.edit();
+					SharedPreferences.Editor editor = sharedPrefTemp.edit();
 					editor.putString("cert", e.getCertPem());
 					editor.putString("key", e.getKeyPem());
 					editor.putString("tid", e.getTransactionId());
