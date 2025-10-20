@@ -137,6 +137,7 @@
                 android:prompt="@string/key_size" />
 
             <Button
+                android:id="@+id/buttonRequest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -167,6 +168,7 @@
                 android:labelFor="@id/textViewTransactionId" />
 
             <Button
+                android:id="@+id/buttonPoll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

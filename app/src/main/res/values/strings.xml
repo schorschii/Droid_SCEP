@@ -23,9 +23,14 @@
     <string name="general_settings">General Settings</string>
     <string name="new_request">New Request</string>
     <string name="poll_pending_request">Poll Pending Request</string>
+    <string name="request_already_sent">Request already sent</string>
+    <string name="overwrite_pending_request">A certificate request is already pending. Are you sure you want to submit a new request?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="please_wait">Please wait…</string>
 
-    <string name="link_github">https://github.com/schorschii/Droid_SCEP</string>
-    <string name="link_github_base">https://github.com/gjyoung1974/Droid_Scep2</string>
+    <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
+    <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>
     <string name="default_server_url" translatable="false">https://SERVERNAME/certsrv/mscep/mscep.dll/pkiclient.exe</string>
     <string name="default_subject_dn" translatable="false">cn=MyDevice,ou=test,o=testco,c=US</string>
     <string name="default_keystore_alias" translatable="false">SCEP Certificate</string>

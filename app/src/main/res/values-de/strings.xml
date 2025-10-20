@@ -21,5 +21,10 @@
     <string name="general_settings">Allgemeine Einstellungen</string>
     <string name="new_request">Neue Anfrage</string>
     <string name="poll_pending_request">Ausstehende Anfrage abrufen</string>
+    <string name="request_already_sent">Anfrage bereits gesendet</string>
+    <string name="overwrite_pending_request">Es steht bereits eine Zertifikatsanfrage aus. Sind Sie sicher, dass Sie eine neue Anfrage senden möchten?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="please_wait">Bitte warten…</string>
 
 </resources>
