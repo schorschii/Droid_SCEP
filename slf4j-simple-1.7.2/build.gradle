@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('slf4j-simple-1.7.2.jar'))

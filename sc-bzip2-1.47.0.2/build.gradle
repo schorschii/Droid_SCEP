@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('sc-bzip2-1.47.0.2.jar'))
