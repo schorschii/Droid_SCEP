@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_scep"
+        android:icon="@drawable/baseline_server_24"
+        android:title="@string/scep" />
+    <item
+        android:id="@+id/action_monitor"
+        android:icon="@drawable/baseline_monitor_24"
+        android:title="@string/monitor" />
+</menu>

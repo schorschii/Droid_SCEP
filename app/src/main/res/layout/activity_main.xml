@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,200 +8,36 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:layout_height="?attr/actionBarSize" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="14dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        app:itemActiveIndicatorStyle="@style/Theme.BottomNavigationView.ActiveIndicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_main_bottom" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/general_settings"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-            <TextView
-                android:id="@+id/textViewScepUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/scep_server_url"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/editTextScepUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textUri"
-                android:labelFor="@id/textViewScepUrl"
-                android:text="@string/default_server_url" />
-
-            <TextView
-                android:id="@+id/textViewOutput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/output"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-                    <RadioButton
-                        android:id="@+id/radioButtonImportToAndroidKeystore"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/import_to_android_keystore"/>
-                    <RadioButton
-                        android:id="@+id/radioButtonSaveToFile"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/save_to_file"/>
-            </RadioGroup>
-
-            <TextView
-                android:id="@+id/textViewKeystorePassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/import_password"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/editTextKeystorePassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/optional"
-                android:inputType="textPassword"
-                android:labelFor="@id/textViewKeystorePassword" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/new_request"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-            <TextView
-                android:id="@+id/textViewCommonName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/subject_dn"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/exitTextCommonName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:labelFor="@id/textViewCommonName"
-                android:text="@string/default_subject_dn" />
-
-            <TextView
-                android:id="@+id/textViewEnrollmentChallenge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/enrollment_challenge_passphrase"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/editTextEnrollmentChallenge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword"
-                android:labelFor="@id/textViewEnrollmentChallenge"
-                android:text="3B78E1F19B0FF9F4" />
-
-            <TextView
-                android:id="@+id/textViewEnrollmentProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/enrollment_profile"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/editTextEnrollmentProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/optional"
-                android:labelFor="@id/textViewEnrollmentProfile"
-                android:text="@string/default_enrollment_profile" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/key_size"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <Spinner
-                android:id="@+id/spinnerKeySize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/rsa_lens"
-                android:prompt="@string/key_size" />
-
-            <Button
-                android:id="@+id/buttonRequest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="14dp"
-                android:onClick="onClickRequest"
-                android:text="@string/request" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@string/poll_pending_request"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-            <TextView
-                android:id="@+id/textViewTransactionId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/transaction_id"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            <EditText
-                android:id="@+id/exitTextTransactionId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:enabled="false"
-                android:labelFor="@id/textViewTransactionId" />
-
-            <Button
-                android:id="@+id/buttonPoll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="14dp"
-                android:onClick="onClickPoll"
-                android:text="@string/poll" />
-
-        </LinearLayout>
-    </ScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

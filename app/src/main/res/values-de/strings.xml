@@ -37,5 +37,7 @@
     <string name="output">Ausgabe</string>
     <string name="import_to_android_keystore">In Android-Keystore importieren</string>
     <string name="save_to_file">In Datei speichern</string>
+    <string name="scep">SCEP</string>
+    <string name="monitor">Überwachen</string>
 
 </resources>

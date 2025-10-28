@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#3DDC84</color>
-    <color name="background">#ffcccccc</color>
+    <color name="selection">#803DDC84</color>
+    <color name="background">#EFF8F3</color>
+    <color name="text">#222222</color>
     <color name="ic_launcher_background">@color/primary</color>
+    <bool name="windowLightNavigationBarFlag">true</bool>
 </resources>

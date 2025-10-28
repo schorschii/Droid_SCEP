@@ -1,16 +1,42 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
-        <!-- Customize your theme here. -->
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
+        <item name="colorOnPrimary">@color/text</item>
+
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">@bool/windowLightNavigationBarFlag</item>
+
+        <!-- for tonal button -->
+        <item name="colorSecondaryContainer">@color/selection</item>
+
+        <!-- adjust toolbar text & buttons to always be dark on our light primary color background -->
+        <item name="toolbarStyle">@style/Theme.Custom.Toolbar</item>
+        <item name="actionOverflowButtonStyle">@style/Theme.Custom.ActionOverflowButton</item>
+        <item name="homeAsUpIndicator">@drawable/baseline_arrow_back_24</item>
 
         <!-- No Action Bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Custom.Toolbar" parent="@style/Widget.Material3.Toolbar.Surface">
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/text</item>
+        <item name="subtitleTextColor">@color/text</item>
+        <item name="navigationIconTint">@color/text</item>
+    </style>
+    <style name="Theme.Custom.ActionOverflowButton" parent="android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/baseline_more_vert_24</item>
+    </style>
+
+    <style name="Theme.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/selection</item>
     </style>
 
 </resources>

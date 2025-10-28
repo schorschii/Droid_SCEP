@@ -39,6 +39,8 @@
     <string name="output">Output</string>
     <string name="import_to_android_keystore">Import to Android keystore</string>
     <string name="save_to_file">Save to file</string>
+    <string name="scep">SCEP</string>
+    <string name="monitor">Monitor</string>
 
     <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
     <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>

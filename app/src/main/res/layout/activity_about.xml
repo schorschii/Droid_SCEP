@@ -15,8 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:layout_height="?attr/actionBarSize" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -48,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textAllCaps="false"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:onClick="onClickGithub"
                 android:text="@string/link_github" />
 
@@ -62,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textAllCaps="false"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:onClick="onClickGithubBase"
                 android:text="@string/link_github_base" />
 
@@ -76,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textAllCaps="false"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:onClick="onClickGithubJscep"
                 android:text="@string/link_github_jscep" />
 

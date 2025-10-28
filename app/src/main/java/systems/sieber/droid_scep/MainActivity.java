@@ -29,10 +29,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
@@ -41,27 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
 	static String SHARED_PREF_TEMP_STORE = "temp-store";
 	static String SHARED_PREF_SETTINGS = "settings";
-
-	Button buttonRequest;
-	Button buttonPoll;
-	EditText editTextUrl;
-	RadioButton radioButtonImportToAndroidKeystore;
-	RadioButton radioButtonSaveToFile;
-	EditText editTextCommonName;
-	EditText editTextEnrollmentChallenge;
-	EditText editTextEnrollmentProfile;
-	EditText editTextKeystorePassword;
-	EditText editTextTransactionId;
-	Spinner spinnerKeyLen;
-	String keystoreAlias;
-
-	SharedPreferences sharedPrefTemp;
-	SharedPreferences sharedPrefSettings;
-
-	ActivityResultLauncher<Intent> arlInstallCertificate;
-	ActivityResultLauncher<Intent> arlSaveCertificate;
-	String tempAlias;
-	byte[] tempBytes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,90 +54,21 @@ public class MainActivity extends AppCompatActivity {
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		// find views
-		buttonRequest = findViewById(R.id.buttonRequest);
-		buttonPoll = findViewById(R.id.buttonPoll);
-		editTextUrl = findViewById(R.id.editTextScepUrl);
-		radioButtonImportToAndroidKeystore = findViewById(R.id.radioButtonImportToAndroidKeystore);
-		radioButtonSaveToFile = findViewById(R.id.radioButtonSaveToFile);
-		editTextCommonName = findViewById(R.id.exitTextCommonName);
-		editTextEnrollmentChallenge = findViewById(R.id.editTextEnrollmentChallenge);
-		editTextEnrollmentProfile = findViewById(R.id.editTextEnrollmentProfile);
-		editTextKeystorePassword = findViewById(R.id.editTextKeystorePassword);
-		editTextTransactionId = findViewById(R.id.exitTextTransactionId);
-		spinnerKeyLen = findViewById(R.id.spinnerKeySize);
-
-		// load settings
-		sharedPrefTemp = getSharedPreferences(SHARED_PREF_TEMP_STORE, Context.MODE_PRIVATE);
-		sharedPrefSettings = getSharedPreferences(SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
-		editTextUrl.setText( sharedPrefSettings.getString("scep-url", getString(R.string.default_server_url)) );
-		if(sharedPrefSettings.getBoolean("save-to-file", false)) {
-			radioButtonSaveToFile.setChecked(true);
-		} else {
-			radioButtonImportToAndroidKeystore.setChecked(true);
-		}
-		editTextCommonName.setText( sharedPrefSettings.getString("subject-dn", getString(R.string.default_subject_dn)) );
-		editTextEnrollmentChallenge.setText( sharedPrefSettings.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
-		editTextEnrollmentProfile.setText( sharedPrefSettings.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
-		setSpinnerDefault(spinnerKeyLen, String.valueOf(sharedPrefSettings.getInt("rsa-key-length", Integer.parseInt(getString(R.string.default_rsa_len)))));
-		editTextTransactionId.setText( sharedPrefTemp.getString("tid", "") );
-		keystoreAlias = getString(R.string.default_keystore_alias);
-
-		// apply MDM policies
-		applyPolicies();
-
-		// init result launcher
-		AppCompatActivity me = this;
-		arlInstallCertificate = registerForActivityResult(
-				new ActivityResultContracts.StartActivityForResult(),
-				new ActivityResultCallback<ActivityResult>() {
-					@Override
-					public void onActivityResult(ActivityResult result) {
-						if(result.getResultCode() != Activity.RESULT_OK) return;
-						AlertDialog.Builder ad = new AlertDialog.Builder(me);
-						ad.setMessage(getString(R.string.add_to_monitoring));
-						ad.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-								// add cert to monitoring
-								String oldAliases = sharedPrefSettings.getString("monitor-aliases", "");
-								SettingsActivity.askAddCertMonitoring(me, oldAliases, tempAlias, new SettingsActivity.KeySelectedCallback() {
-									@Override
-									public void selected(String aliases) {
-										SharedPreferences.Editor edit = sharedPrefSettings.edit();
-										edit.putString("monitor-aliases", aliases);
-										edit.apply();
-									}
-								});
-							}
-						});
-						ad.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-							}
-						});
-						ad.show();
-					}
-				});
-		arlSaveCertificate = registerForActivityResult(
-				new ActivityResultContracts.StartActivityForResult(),
-				new ActivityResultCallback<ActivityResult>() {
-					@Override
-					public void onActivityResult(ActivityResult result) {
-						if(result.getResultCode() != Activity.RESULT_OK) return;
-						try {
-							Uri uri = result.getData().getData();
-							OutputStream output = me.getContentResolver().openOutputStream(uri);
-							output.write(tempBytes);
-							output.flush();
-							output.close();
-						} catch(Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+		// init bottom navigation
+		BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+		setCurrentFragment(new ScepFragment());
+		bottomNavigationView.setOnItemSelectedListener(menuItem -> {
+			switch(menuItem.getItemId()) {
+				case R.id.action_scep:
+					setCurrentFragment(new ScepFragment());
+					break;
+				case R.id.action_monitor:
+					setCurrentFragment(new MonitorFragment());
+					break;
+			}
+			// Return true to indicate that we handled the item click
+			return true;
+		});
 
 		// init cert check background worker
 		PeriodicWorkRequest saveRequest =
@@ -185,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
 			case android.R.id.home:
 				finish();
 				break;
-			case R.id.action_settings:
-				startActivity(new Intent(this, SettingsActivity.class));
-				break;
 			case R.id.action_about:
 				startActivity(new Intent(this, AboutActivity.class));
 				break;
@@ -195,301 +105,13 @@ public class MainActivity extends AppCompatActivity {
 		return true;
 	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		// save settings
-		SharedPreferences.Editor edit = sharedPrefSettings.edit();
-		edit.putString("scep-url", editTextUrl.getText().toString());
-		edit.putBoolean("save-to-file", radioButtonSaveToFile.isChecked());
-		edit.putString("subject-dn", editTextCommonName.getText().toString());
-		edit.putString("enrollment-challenge", editTextEnrollmentChallenge.getText().toString());
-		edit.putString("enrollment-profile", editTextEnrollmentProfile.getText().toString());
-		edit.putInt("rsa-key-length", Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem())));
-		edit.apply();
-	}
-
-	private void applyPolicies() {
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			RestrictionsManager restrictionsMgr = (RestrictionsManager) getSystemService(Context.RESTRICTIONS_SERVICE);
-			Bundle appRestrictions = restrictionsMgr.getApplicationRestrictions();
-
-			String url = appRestrictions.getString("scep-url", null);
-			if(url != null) {
-				editTextUrl.setText(url);
-				editTextUrl.setEnabled(false);
-			}
-
-			if(appRestrictions.containsKey("save-to-file")) {
-				if(appRestrictions.getBoolean("save-to-file", false)) {
-					radioButtonSaveToFile.setChecked(true);
-				} else {
-					radioButtonImportToAndroidKeystore.setChecked(true);
-				}
-				radioButtonSaveToFile.setEnabled(false);
-				radioButtonImportToAndroidKeystore.setEnabled(false);
-			}
-
-			String subjectDn = appRestrictions.getString("subject-dn", null);
-			if(subjectDn != null) {
-				editTextCommonName.setText(subjectDn);
-				editTextCommonName.setEnabled(false);
-			}
-
-			String enrollmentChallenge = appRestrictions.getString("enrollment-challenge", null);
-			if(enrollmentChallenge != null) {
-				editTextEnrollmentChallenge.setText(enrollmentChallenge);
-				editTextEnrollmentChallenge.setEnabled(false);
-			}
-
-			String enrollmentProfile = appRestrictions.getString("enrollment-profile", null);
-			if(enrollmentProfile != null) {
-				editTextEnrollmentProfile.setText(enrollmentProfile);
-				editTextEnrollmentProfile.setEnabled(false);
-			}
-
-			String keystorePassword = appRestrictions.getString("keystore-password", null);
-			if(keystorePassword != null) {
-				editTextKeystorePassword.setText(keystorePassword);
-				editTextKeystorePassword.setEnabled(false);
-			}
-
-			keystoreAlias = appRestrictions.getString("keystore-alias", keystoreAlias);
-
-			int defaultRsaKeyLenInt = appRestrictions.getInt("rsa-key-length", 0);
-			if(defaultRsaKeyLenInt > 0) {
-				setSpinnerDefault(spinnerKeyLen, String.valueOf(defaultRsaKeyLenInt));
-				spinnerKeyLen.setEnabled(false);
-			}
-		}
-	}
-
-	private void setSpinnerDefault(Spinner s, String def) {
-		SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
-		for(int i = 0; i < adapter.getCount(); i++) {
-			if(adapter.getItem(i).toString().equals(def)) {
-				spinnerKeyLen.setSelection(i);
-			}
-		}
-	}
-
-	public void onClickRequest(View view) {
-		if(sharedPrefTemp.getString("cert", "").isEmpty()
-		|| sharedPrefTemp.getString("key", "").isEmpty()
-		|| sharedPrefTemp.getString("tid", "").isEmpty()) {
-			request();
-		} else {
-			AlertDialog.Builder ad = new AlertDialog.Builder(this);
-			ad.setCancelable(false);
-			ad.setIcon(getResources().getDrawable(R.drawable.ic_warning_orange_24dp));
-			ad.setTitle(getString(R.string.request_already_sent));
-			ad.setMessage(getString(R.string.overwrite_pending_request));
-			ad.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-					request();
-				}
-			});
-			ad.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			ad.show();
-		}
-	}
-
-	private void request() {
-		buttonRequest.setEnabled(false);
-		buttonRequest.setText(getString(R.string.please_wait));
-
-		CharSequence sURI = editTextUrl.getText();
-		int isKeyLen = Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem()));
-
-		// enable some policies
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-
-		Activity a = this;
-		AsyncTask.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					byte[] keystore = ScepClient.CertReq(
-							sURI.toString(),
-							editTextCommonName.getText().toString(),
-							editTextEnrollmentChallenge.getText().toString(),
-							editTextEnrollmentProfile.getText().toString(),
-							isKeyLen,
-							keystoreAlias,
-							editTextKeystorePassword.getText().toString()
-					);
-
-					// import into system/user keystore
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							installCert(keystore, keystoreAlias);
-						}
-					});
-
-				} catch(ScepClient.RequestPendingException e) {
-					SharedPreferences.Editor editor = sharedPrefTemp.edit();
-					editor.putString("cert", e.getCertPem());
-					editor.putString("key", e.getKeyPem());
-					editor.putString("tid", e.getTransactionId());
-					editor.apply();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), getString(R.string.request_pending_help), CommonDialog.Icon.WARN, false);
-							editTextTransactionId.setText(e.getTransactionId());
-						}
-					});
-
-				} catch(ScepClient.BadRequestException e) {
-					e.printStackTrace();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), getString(R.string.bad_request_help), CommonDialog.Icon.ERROR, false);
-						}
-					});
-
-				} catch(Exception e) {
-					e.printStackTrace();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), e.getMessage(), CommonDialog.Icon.ERROR, false);
-						}
-					});
-
-				} finally {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							buttonRequest.setEnabled(true);
-							buttonRequest.setText(getString(R.string.request));
-						}
-					});
-				}
-			}
-		});
-	}
-
-	public void onClickPoll(View view) {
-		if(sharedPrefTemp.getString("cert", "").isEmpty()
-		|| sharedPrefTemp.getString("key", "").isEmpty()
-		|| sharedPrefTemp.getString("tid", "").isEmpty()) {
-			CommonDialog.show(this, getString(R.string.no_request_pending), "", CommonDialog.Icon.WARN, false);
-			return;
-		}
-
-		buttonPoll.setEnabled(false);
-		buttonPoll.setText(getString(R.string.please_wait));
-
-		CharSequence sURI = editTextUrl.getText();
-
-		// enable some policies
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-
-		Activity a = this;
-		AsyncTask.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					byte[] keystore = ScepClient.CertPoll(
-							sURI.toString(),
-							sharedPrefTemp.getString("cert", ""),
-							sharedPrefTemp.getString("key", ""),
-							editTextCommonName.getText().toString(),
-							sharedPrefTemp.getString("tid", ""),
-							keystoreAlias,
-							editTextKeystorePassword.getText().toString()
-					);
-
-					// clear temp data
-					SharedPreferences.Editor editor = sharedPrefTemp.edit();
-					editor.remove("cert");
-					editor.remove("key");
-					editor.remove("tid");
-					editor.apply();
-
-					// import into system/user keystore
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							installCert(keystore, keystoreAlias);
-
-							// clear temp data
-							editTextTransactionId.setText("");
-						}
-					});
-
-				} catch(ScepClient.RequestPendingException e) {
-					SharedPreferences.Editor editor = sharedPrefTemp.edit();
-					editor.putString("cert", e.getCertPem());
-					editor.putString("key", e.getKeyPem());
-					editor.putString("tid", e.getTransactionId());
-					editor.apply();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), getString(R.string.request_pending_help), CommonDialog.Icon.WARN, false);
-							editTextTransactionId.setText(e.getTransactionId());
-						}
-					});
-
-				} catch(ScepClient.BadRequestException e) {
-					e.printStackTrace();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), getString(R.string.bad_request_help), CommonDialog.Icon.ERROR, false);
-						}
-					});
-
-				} catch(Exception e) {
-					e.printStackTrace();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							CommonDialog.show(a, e.getClass().getName(), e.getMessage(), CommonDialog.Icon.ERROR, false);
-						}
-					});
-
-				} finally {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							buttonPoll.setEnabled(true);
-							buttonPoll.setText(getString(R.string.poll));
-						}
-					});
-				}
-			}
-		});
-	}
-
-	private void installCert(byte[] keystore, String alias) {
-		if(radioButtonSaveToFile.isChecked()) {
-			tempBytes = keystore;
-			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType("application/x-pkcs12");
-			intent.putExtra(Intent.EXTRA_TITLE, alias+".p12");
-			arlSaveCertificate.launch(intent);
-		} else {
-			tempAlias = alias;
-			Intent intent = KeyChain.createInstallIntent();
-			intent.putExtra(KeyChain.EXTRA_PKCS12, keystore);
-			arlInstallCertificate.launch(intent);
-		}
+	private void setCurrentFragment(Fragment fragment) {
+		getSupportFragmentManager()
+				.beginTransaction()
+				// Replace the fragment inside the container with the new fragment
+				.replace(R.id.fragment_container, fragment)
+				// Commit the transaction to actually perform the change
+				.commit();
 	}
 
 }
