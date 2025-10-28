@@ -16,7 +16,6 @@ public class CommonDialog {
         if(title != null && !title.equals("")) ad.setTitle(title);
         if(icon != null && icon == Icon.OK) {
             if(text != null && (!text.equals(""))) ad.setMessage(text);
-            ad.setIcon(a.getResources().getDrawable(R.drawable.ic_done_green_24dp));
         } else if(icon != null && icon == Icon.ERROR) {
             if(text != null && (!text.equals(""))) ad.setMessage(text);
             ad.setIcon(a.getResources().getDrawable(R.drawable.ic_error_red_24dp));
