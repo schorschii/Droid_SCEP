@@ -28,6 +28,21 @@ android {
     packagingOptions {
         exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
     }
+    flavorDimensions "appstore"
+    productFlavors {
+        standalone {
+            dimension "appstore"
+            dependenciesInfo {
+                // Disables dependency metadata when building APKs.
+                includeInApk = false
+                // Disables dependency metadata when building Android App Bundles.
+                includeInBundle = false
+            }
+        }
+        google {
+            dimension "appstore"
+        }
+    }
 }
 
 dependencies {
