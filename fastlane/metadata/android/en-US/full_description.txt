@@ -1,3 +1,5 @@
 This app enables you to request and poll certificates from a SCEP (Simple Certificate Enrollment Protocol) server. It can be configured via MDM (Mobile Device Management) policies.
 
-Additionally, it can be used to monitor the certificate expiration and send you a notification a couple of days before.
+It can also be used to monitor the expiration of your personal certificates and send you a notification a couple of days before.
+
+Additionally, it provides a manual Certificate Signing Request (CSR) creation feature and a PEM to PKCS12 converter.
