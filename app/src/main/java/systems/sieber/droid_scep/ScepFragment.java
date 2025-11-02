@@ -283,10 +283,10 @@ public class ScepFragment extends Fragment {
     }
 
     private void setSpinnerDefault(Spinner s, String def) {
-        SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
+        SpinnerAdapter adapter = s.getAdapter();
         for(int i = 0; i < adapter.getCount(); i++) {
             if(adapter.getItem(i).toString().equals(def)) {
-                spinnerKeyLen.setSelection(i);
+                s.setSelection(i);
             }
         }
     }
