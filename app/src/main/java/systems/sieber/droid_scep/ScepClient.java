@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.jscep.client.Client;
 
 import org.jscep.client.ClientException;
@@ -90,7 +91,6 @@ public class ScepClient {
         Client client = new Client(server, verifier);
 
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-
         keyGen.initialize(isKeyLen);
         KeyPair keyPair = keyGen.genKeyPair();
 
@@ -124,8 +124,8 @@ public class ScepClient {
         if(!response.isSuccess()) {
             if(response.isPending()) {
                 throw new RequestPendingException(
-                        cert2pem(cert),
-                        key2pem(keyPair.getPrivate()),
+                        cert2pem(cert, false),
+                        key2pem(keyPair.getPrivate(), false),
                         response.getTransactionId().toString()
                 );
             } else if(response.isFailure()) {
@@ -161,8 +161,8 @@ public class ScepClient {
         if(!response.isSuccess()) {
             if(response.isPending()) {
                 throw new RequestPendingException(
-                        cert2pem(cert),
-                        key2pem(key),
+                        cert2pem(cert, false),
+                        key2pem(key, false),
                         response.getTransactionId().toString()
                 );
             } else if(response.isFailure()) {
@@ -204,21 +204,38 @@ public class ScepClient {
         return keystore;
     }
 
-    private static String cert2pem(X509Certificate cert) throws CertificateEncodingException, IOException {
+    static String csr2pem(PKCS10CertificationRequest csr, boolean withTags) throws IOException {
+        Base64Encoder encoder = new Base64Encoder();
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        encoder.encode(csr.getEncoded(), 0, csr.getEncoded().length, s);
+        if(withTags) {
+            return "-----BEGIN NEW CERTIFICATE REQUEST-----\n" + s.toString() + "\n-----END NEW CERTIFICATE REQUEST-----\n";
+        } else {
+            return s.toString();
+        }
+    }
+    static String cert2pem(X509Certificate cert, boolean withTags) throws CertificateEncodingException, IOException {
         Base64Encoder encoder = new Base64Encoder();
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         encoder.encode(cert.getEncoded(), 0, cert.getEncoded().length, s);
-        return s.toString();
-        //return "-----BEGIN CERTIFICATE-----\n" + s.toString() + "-----END CERTIFICATE-----\n";
+        if(withTags) {
+            return "-----BEGIN CERTIFICATE-----\n" + s.toString() + "\n-----END CERTIFICATE-----\n";
+        } else {
+            return s.toString();
+        }
     }
-    private static String key2pem(PrivateKey key) throws IOException {
+    static String key2pem(PrivateKey key, boolean withTags) throws IOException {
         Base64Encoder encoder = new Base64Encoder();
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         encoder.encode(key.getEncoded(), 0, key.getEncoded().length, s);
-        return s.toString();
-        //return "-----BEGIN PRIVATE KEY-----\n" + s.toString() + "-----END PRIVATE KEY-----\n";
+        if(withTags) {
+            return "-----BEGIN PRIVATE KEY-----\n" + s.toString() + "\n-----END PRIVATE KEY-----\n";
+        } else {
+            return s.toString();
+        }
     }
-    private static X509Certificate pem2cert(String pem) throws CertificateException, IOException {
+    static X509Certificate pem2cert(String pem) throws CertificateException, IOException {
+        pem = stripPem(pem);
         Base64Encoder encoder = new Base64Encoder();
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         encoder.decode(pem.getBytes(), 0, pem.getBytes().length, s);
@@ -227,13 +244,30 @@ public class ScepClient {
                 .getInstance("X509")
                 .generateCertificate(is);
     }
-    private static PrivateKey pem2key(String pem) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+    static PrivateKey pem2key(String pem) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        pem = stripPem(pem);
         Base64Encoder encoder = new Base64Encoder();
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         encoder.decode(pem.getBytes(), 0, pem.getBytes().length, s);
         return (PrivateKey) KeyFactory
                 .getInstance("RSA")
                 .generatePrivate(new PKCS8EncodedKeySpec(s.toByteArray()));
+    }
+    private static String stripPem(String pem) {
+        pem = pem.trim();
+        if(pem.startsWith("-----BEGIN PRIVATE KEY-----")) {
+            pem = pem.substring("-----BEGIN PRIVATE KEY-----".length());
+        }
+        if(pem.startsWith("-----BEGIN CERTIFICATE-----")) {
+            pem = pem.substring("-----BEGIN CERTIFICATE-----".length());
+        }
+        if(pem.endsWith("-----END PRIVATE KEY-----")) {
+            pem = pem.substring(0, pem.length() - "-----END PRIVATE KEY-----".length());
+        }
+        if(pem.endsWith("-----END CERTIFICATE-----")) {
+            pem = pem.substring(0, pem.length() - "-----END CERTIFICATE-----".length());
+        }
+        return pem.trim();
     }
 
 }

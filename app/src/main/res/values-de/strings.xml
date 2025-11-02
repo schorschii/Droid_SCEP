@@ -7,7 +7,6 @@
     <string name="import_password">Keystore-/Datei-Passwort</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge-Passphrase</string>
     <string name="enrollment_profile">Enrollment-Profil</string>
-    <string name="subject_dn">Subject-DN</string>
     <string name="scep_server_url">SCEP-Server-URL</string>
     <string name="request">Anfrage senden</string>
     <string name="transaction_id">Transaktions-ID</string>
@@ -39,5 +38,17 @@
     <string name="save_to_file">In Datei speichern</string>
     <string name="scep">SCEP</string>
     <string name="monitor">Überwachen</string>
+    <string name="generate_csr_title">Certificate Signing Request (CSR) generieren</string>
+    <string name="subject_distinguished_name">Subject Distinguished Name</string>
+    <string name="e_mail_address">E-Mail-Adresse</string>
+    <string name="pem_key_file">PEM-Schlüsseldatei</string>
+    <string name="choose">Auswählen…</string>
+    <string name="pem_csr_file">CSR-Datei</string>
+    <string name="generate_csr">CSR generieren</string>
+    <string name="pem_p12_converter_title">PEM-Zertifikat mit Schlüssel nach PKCS12 konvertieren</string>
+    <string name="pem_cert_file">PEM-Zertifikatsdatei</string>
+    <string name="password_for_p12">Passwort für PKCS12-Container</string>
+    <string name="save_as_p12_pfx">Als .p12/.pfx speichern</string>
+    <string name="extras">Extras</string>
 
 </resources>

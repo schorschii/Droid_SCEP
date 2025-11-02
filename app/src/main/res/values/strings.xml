@@ -9,7 +9,6 @@
     <string name="import_password">Keystore/File Password</string>
     <string name="enrollment_challenge_passphrase">Enrollment Challenge Passphrase</string>
     <string name="enrollment_profile">Enrollment Profile</string>
-    <string name="subject_dn">Subject DN</string>
     <string name="scep_server_url">SCEP Server URL</string>
     <string name="request">Send Request</string>
     <string name="transaction_id">Transaction ID</string>
@@ -41,6 +40,18 @@
     <string name="save_to_file">Save to file</string>
     <string name="scep">SCEP</string>
     <string name="monitor">Monitor</string>
+    <string name="generate_csr_title">Generate Certificate Signing Request (CSR)</string>
+    <string name="subject_distinguished_name">Subject Distinguished Name</string>
+    <string name="e_mail_address">Email address</string>
+    <string name="pem_key_file">PEM key file</string>
+    <string name="choose">Choose…</string>
+    <string name="pem_csr_file">CSR file</string>
+    <string name="generate_csr">Generate CSR</string>
+    <string name="pem_p12_converter_title">Convert PEM cert with key to PKCS12</string>
+    <string name="pem_cert_file">PEM cert file</string>
+    <string name="password_for_p12">Password for PKCS12 container</string>
+    <string name="save_as_p12_pfx">Save as .p12/.pfx</string>
+    <string name="extras">Tools</string>
 
     <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
     <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>

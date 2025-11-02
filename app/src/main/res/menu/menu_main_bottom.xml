@@ -8,4 +8,8 @@
         android:id="@+id/action_monitor"
         android:icon="@drawable/baseline_monitor_24"
         android:title="@string/monitor" />
+    <item
+        android:id="@+id/action_extras"
+        android:icon="@drawable/baseline_toolbox_24"
+        android:title="@string/extras" />
 </menu>

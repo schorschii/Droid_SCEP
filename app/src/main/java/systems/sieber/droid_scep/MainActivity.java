@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 				case R.id.action_monitor:
 					setCurrentFragment(new MonitorFragment());
 					break;
+				case R.id.action_extras:
+					setCurrentFragment(new ExtrasFragment());
+					break;
 			}
 			// Return true to indicate that we handled the item click
 			return true;
