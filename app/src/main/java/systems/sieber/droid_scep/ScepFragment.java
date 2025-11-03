@@ -43,6 +43,7 @@ public class ScepFragment extends Fragment {
     EditText editTextUrl;
     RadioButton radioButtonImportToAndroidKeystore;
     RadioButton radioButtonSaveToFile;
+    EditText editTextCaFingerprint;
     EditText editTextCommonName;
     EditText editTextEnrollmentChallenge;
     EditText editTextEnrollmentProfile;
@@ -74,6 +75,7 @@ public class ScepFragment extends Fragment {
         editTextUrl = v.findViewById(R.id.editTextScepUrl);
         radioButtonImportToAndroidKeystore = v.findViewById(R.id.radioButtonImportToAndroidKeystore);
         radioButtonSaveToFile = v.findViewById(R.id.radioButtonSaveToFile);
+        editTextCaFingerprint = v.findViewById(R.id.exitTextCaFingerprint);
         editTextCommonName = v.findViewById(R.id.exitTextCommonName);
         editTextEnrollmentChallenge = v.findViewById(R.id.editTextEnrollmentChallenge);
         editTextEnrollmentProfile = v.findViewById(R.id.editTextEnrollmentProfile);
@@ -91,6 +93,7 @@ public class ScepFragment extends Fragment {
             } else {
                 radioButtonImportToAndroidKeystore.setChecked(true);
             }
+            editTextCaFingerprint.setText( sharedPrefSettings.getString("ca-fingerprint", "") );
             editTextCommonName.setText( sharedPrefSettings.getString("subject-dn", getString(R.string.default_subject_dn)) );
             editTextEnrollmentChallenge.setText( sharedPrefSettings.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
             editTextEnrollmentProfile.setText( sharedPrefSettings.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
@@ -248,6 +251,12 @@ public class ScepFragment extends Fragment {
                 radioButtonImportToAndroidKeystore.setEnabled(false);
             }
 
+            String caFingerprint = appRestrictions.getString("ca-fingerprint", null);
+            if(caFingerprint != null) {
+                editTextCaFingerprint.setText(caFingerprint);
+                editTextCaFingerprint.setEnabled(false);
+            }
+
             String subjectDn = appRestrictions.getString("subject-dn", null);
             if(subjectDn != null) {
                 editTextCommonName.setText(subjectDn);
@@ -310,6 +319,7 @@ public class ScepFragment extends Fragment {
                             sURI.toString(),
                             editTextCommonName.getText().toString(),
                             editTextEnrollmentChallenge.getText().toString(),
+                            editTextCaFingerprint.getText().toString().replace(" ", "").trim(),
                             editTextEnrollmentProfile.getText().toString(),
                             isKeyLen,
                             keystoreAlias,

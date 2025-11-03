@@ -53,5 +53,6 @@
     <string name="csr_generated">CSR generiert</string>
     <string name="done">Fertig</string>
     <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
+    <string name="ca_fingerprint">CA-Fingerprint (MD5)</string>
 
 </resources>

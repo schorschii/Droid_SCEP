@@ -24,7 +24,6 @@
             android:layout_marginTop="14dp"
             android:text="@string/scep_server_url"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/editTextScepUrl"
             android:layout_width="match_parent"
@@ -41,20 +40,17 @@
             android:layout_marginTop="14dp"
             android:text="@string/output"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
-
             <RadioButton
                 android:id="@+id/radioButtonImportToAndroidKeystore"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/import_to_android_keystore" />
-
             <RadioButton
                 android:id="@+id/radioButtonSaveToFile"
                 android:layout_width="0dp"
@@ -70,7 +66,6 @@
             android:layout_marginTop="14dp"
             android:text="@string/import_password"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/editTextKeystorePassword"
             android:layout_width="match_parent"
@@ -88,13 +83,27 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
         <TextView
+            android:id="@+id/textViewCaFingerprint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/ca_fingerprint"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <EditText
+            android:id="@+id/exitTextCaFingerprint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:labelFor="@id/textViewCaFingerprint"
+            android:hint="@string/optional" />
+
+        <TextView
             android:id="@+id/textViewCommonName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:text="@string/subject_distinguished_name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/exitTextCommonName"
             android:layout_width="match_parent"
@@ -110,15 +119,13 @@
             android:layout_marginTop="14dp"
             android:text="@string/enrollment_challenge_passphrase"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/editTextEnrollmentChallenge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:labelFor="@id/textViewEnrollmentChallenge"
-            android:text="3B78E1F19B0FF9F4" />
+            android:labelFor="@id/textViewEnrollmentChallenge" />
 
         <TextView
             android:id="@+id/textViewEnrollmentProfile"
@@ -127,7 +134,6 @@
             android:layout_marginTop="14dp"
             android:text="@string/enrollment_profile"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/editTextEnrollmentProfile"
             android:layout_width="match_parent"
@@ -143,7 +149,6 @@
             android:layout_marginTop="14dp"
             android:text="@string/key_size"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <Spinner
             android:id="@+id/spinnerKeySize"
             android:layout_width="match_parent"
@@ -173,7 +178,6 @@
             android:layout_marginTop="14dp"
             android:text="@string/transaction_id"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <EditText
             android:id="@+id/exitTextTransactionId"
             android:layout_width="match_parent"

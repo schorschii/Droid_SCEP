@@ -10,6 +10,10 @@
         android:title="Output to file"
         android:restrictionType="bool" />
     <restriction
+        android:key="ca-fingerprint"
+        android:title="CA Fingerprint"
+        android:restrictionType="string" />
+    <restriction
         android:key="subject-dn"
         android:title="Subject DN"
         android:restrictionType="string" />

@@ -13,6 +13,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -30,11 +31,13 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.util.encoders.Hex;
 import org.jscep.client.Client;
 
 import org.jscep.client.ClientException;
 import org.jscep.client.EnrollmentResponse;
 import org.jscep.client.verification.CertificateVerifier;
+import org.jscep.client.verification.MessageDigestCertificateVerifier;
 import org.jscep.client.verification.OptimisticCertificateVerifier;
 
 import org.jscep.transaction.FailInfo;
@@ -79,24 +82,33 @@ public class ScepClient {
         }
     }
 
-    public static byte[] CertReq(String enrollmentURL, String entityName, String enrollmentChallenge, String enrollmentProfile, int isKeyLen, String keystoreAlias, String keystorePassword)
+    public static byte[] CertReq(String enrollmentURL, String entityName, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen, String keystoreAlias, String keystorePassword)
             throws BadRequestException, RequestPendingException, ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
 
         // load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
 
-        URL server = new URL(enrollmentURL);
+        // check CA fingerprint
+        CertificateVerifier verifier;
+        if(caFingerprint == null || caFingerprint.isEmpty()) {
+            verifier = new OptimisticCertificateVerifier();
+        } else {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] expected = Hex.decode(caFingerprint.getBytes());
+            verifier = new MessageDigestCertificateVerifier(digest, expected);
+        }
 
-        CertificateVerifier verifier = new OptimisticCertificateVerifier();
+        // init SCEP client
+        URL server = new URL(enrollmentURL);
         Client client = new Client(server, verifier);
 
+        // generate key
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(isKeyLen);
         KeyPair keyPair = keyGen.genKeyPair();
 
-        X500Name entity = new X500Name(entityName);
-
         // create a self signed cert to sign the PKCS7 envelope
+        X500Name entity = new X500Name(entityName);
         JcaX509v3CertificateBuilder v3CertGen = new JcaX509v3CertificateBuilder(
                 entity, BigInteger.valueOf(1),
                 new Date(System.currentTimeMillis()),
