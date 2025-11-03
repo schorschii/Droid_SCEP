@@ -50,5 +50,8 @@
     <string name="password_for_p12">Passwort für PKCS12-Container</string>
     <string name="save_as_p12_pfx">Als .p12/.pfx speichern</string>
     <string name="extras">Extras</string>
+    <string name="csr_generated">CSR generiert</string>
+    <string name="done">Fertig</string>
+    <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
 
 </resources>

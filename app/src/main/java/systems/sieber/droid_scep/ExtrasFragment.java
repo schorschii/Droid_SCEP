@@ -232,14 +232,14 @@ public class ExtrasFragment extends Fragment {
                     csrOut.close();
 
                     AlertDialog.Builder ad = new AlertDialog.Builder(activity);
-                    ad.setTitle("CSR generated");
-                    ad.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    ad.setTitle(getString(R.string.csr_generated));
+                    ad.setPositiveButton(getString(R.string.done), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-                    ad.setNeutralButton("Copy to clipboard", new DialogInterface.OnClickListener() {
+                    ad.setNeutralButton(getString(R.string.copy_to_clipboard), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);

@@ -52,6 +52,9 @@
     <string name="password_for_p12">Password for PKCS12 container</string>
     <string name="save_as_p12_pfx">Save as .p12/.pfx</string>
     <string name="extras">Tools</string>
+    <string name="csr_generated">CSR generated</string>
+    <string name="done">Done</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
 
     <string name="link_github" translatable="false">https://github.com/schorschii/Droid_SCEP</string>
     <string name="link_github_base" translatable="false">https://github.com/gjyoung1974/Droid_Scep2</string>
