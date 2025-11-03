@@ -26,7 +26,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.io.IOUtils;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.ExtensionsGenerator;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
@@ -220,6 +225,18 @@ public class ExtrasFragment extends Fragment {
                     // generate the CSR
                     PKCS10CertificationRequestBuilder crb = new JcaPKCS10CertificationRequestBuilder(
                             entity, keyPair.getPublic());
+
+                    // add email SAN
+                    String email = ((EditText) v.findViewById(R.id.editTextEmail)).getText().toString();
+                    if(!email.isEmpty()) {
+                        ExtensionsGenerator extGen = new ExtensionsGenerator();
+                        GeneralNames subjectAltNames = new GeneralNames(new GeneralName[] {
+                                new GeneralName(GeneralName.rfc822Name, email)
+                        });
+                        extGen.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
+                        crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extGen.generate());
+                    }
+
                     String strCsr = ScepClient.csr2pem(crb.build(cs), true);
 
                     // save files

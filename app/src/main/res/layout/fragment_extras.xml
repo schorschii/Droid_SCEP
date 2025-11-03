@@ -39,7 +39,7 @@
             android:text="@string/e_mail_address"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         <EditText
-            android:id="@+id/exitTextEmail"
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
