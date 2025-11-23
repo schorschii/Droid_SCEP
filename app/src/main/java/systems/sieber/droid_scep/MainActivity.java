@@ -52,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		// init cert check background worker
-		PeriodicWorkRequest saveRequest =
-				new PeriodicWorkRequest.Builder(CertWatcher.class, 1, TimeUnit.DAYS)
-						.build();
 		WorkManager wm = WorkManager.getInstance(this);
-		wm.enqueueUniquePeriodicWork("certCheck", ExistingPeriodicWorkPolicy.REPLACE, saveRequest);
+		PeriodicWorkRequest certCheckRequest = new PeriodicWorkRequest.Builder(CertWatcher.class, 1, TimeUnit.DAYS).build();
+		wm.enqueueUniquePeriodicWork("certCheck", ExistingPeriodicWorkPolicy.REPLACE, certCheckRequest);
+		PeriodicWorkRequest certInstallRequest = new PeriodicWorkRequest.Builder(CertInstaller.class, 1, TimeUnit.HOURS).build();
+		wm.enqueueUniquePeriodicWork("certInstall", ExistingPeriodicWorkPolicy.REPLACE, certInstallRequest);
 
         try {
             for(WorkInfo wi : wm.getWorkInfosByTag(CertWatcher.class.getName()).get()) {

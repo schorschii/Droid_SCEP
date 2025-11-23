@@ -66,7 +66,9 @@
     <string name="default_enrollment_profile" translatable="false" />
     <string name="default_enrollment_challenge" translatable="false" />
     <string name="default_warn_days" translatable="false">21</string>
+    <string name="default_renew_days" translatable="false">28</string>
     <string name="default_rsa_len" translatable="false">4096</string>
+    <string name="requires_delegated_scope_cert_install" translatable="false">Requires delegated scope CERT_INSTALL set via MDM!</string>
 
     <string-array name="rsa_lens" translatable="false">
         <item>1024</item>

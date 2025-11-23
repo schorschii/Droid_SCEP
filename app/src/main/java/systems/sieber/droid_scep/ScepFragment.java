@@ -315,15 +315,17 @@ public class ScepFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    byte[] keystore = ScepClient.CertReq(
+                    ScepClient.CertReqResponse r = ScepClient.CertReq(
                             sURI.toString(),
                             editTextCommonName.getText().toString(),
                             editTextEnrollmentChallenge.getText().toString(),
                             editTextCaFingerprint.getText().toString().replace(" ", "").trim(),
                             editTextEnrollmentProfile.getText().toString(),
-                            isKeyLen,
-                            keystoreAlias,
-                            editTextKeystorePassword.getText().toString()
+                            isKeyLen
+                    );
+                    byte[] keystore = ScepClient.certResponse2pkcs12(
+                            r.mCertStore, r.mPrivKey,
+                            keystoreAlias, editTextKeystorePassword.getText().toString()
                     );
 
                     // import into system/user keystore
@@ -393,14 +395,16 @@ public class ScepFragment extends Fragment {
             @Override
             public void run() {
                 try {
-                    byte[] keystore = ScepClient.CertPoll(
+                    ScepClient.CertReqResponse r = ScepClient.CertPoll(
                             sURI.toString(),
                             sharedPrefTemp.getString("cert", ""),
                             sharedPrefTemp.getString("key", ""),
                             editTextCommonName.getText().toString(),
-                            sharedPrefTemp.getString("tid", ""),
-                            keystoreAlias,
-                            editTextKeystorePassword.getText().toString()
+                            sharedPrefTemp.getString("tid", "")
+                    );
+                    byte[] keystore = ScepClient.certResponse2pkcs12(
+                            r.mCertStore, r.mPrivKey,
+                            keystoreAlias, editTextKeystorePassword.getText().toString()
                     );
 
                     // clear temp data

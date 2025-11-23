@@ -41,5 +41,14 @@
         android:key="warn-days"
         android:title="Days before expiration warning"
         android:restrictionType="integer" />
+    <restriction
+        android:key="auto-enroll"
+        android:title="Auto enroll and renew certificate via SCEP"
+        android:description="@string/requires_delegated_scope_cert_install"
+        android:restrictionType="bool" />
+    <restriction
+        android:key="renew-days"
+        android:title="Days before trying automatic renewal"
+        android:restrictionType="integer" />
 
 </restrictions>

@@ -81,9 +81,17 @@ public class ScepClient {
             return mTransactionId;
         }
     }
+    public static class CertReqResponse {
+        CertStore mCertStore;
+        PrivateKey mPrivKey;
+        public CertReqResponse(CertStore certStore, PrivateKey privKey) {
+            mCertStore = certStore;
+            mPrivKey = privKey;
+        }
+    }
 
-    public static byte[] CertReq(String enrollmentURL, String entityName, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen, String keystoreAlias, String keystorePassword)
-            throws BadRequestException, RequestPendingException, ClientException, TransactionException, CertStoreException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, KeyStoreException, NoSuchProviderException, IOException {
+    public static CertReqResponse CertReq(String enrollmentURL, String entityName, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen)
+            throws BadRequestException, RequestPendingException, ClientException, TransactionException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, IOException {
 
         // load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
@@ -149,11 +157,11 @@ public class ScepClient {
             throw new ClientException("Response is neither success, pending or failure?!");
         }
 
-        return parseCertResponse(response.getCertStore(), keyPair.getPrivate(), keystoreAlias, keystorePassword);
+        return new CertReqResponse(response.getCertStore(), keyPair.getPrivate());
     }
 
-    public static byte[] CertPoll(String enrollmentURL, String certPem, String keyPem, String entityName, String transactionId, String keystoreAlias, String keystorePassword)
-            throws BadRequestException, RequestPendingException, ClientException, TransactionException, InvalidKeySpecException, NoSuchAlgorithmException, CertificateException, IOException, CertStoreException, KeyStoreException, NoSuchProviderException {
+    public static CertReqResponse CertPoll(String enrollmentURL, String certPem, String keyPem, String entityName, String transactionId)
+            throws BadRequestException, RequestPendingException, ClientException, TransactionException, InvalidKeySpecException, NoSuchAlgorithmException, CertificateException, IOException {
 
         // load SpongyCastle
         java.security.Security.addProvider(new BouncyCastleProvider());
@@ -186,10 +194,10 @@ public class ScepClient {
             throw new ClientException("Response is neither success, pending or failure?!");
         }
 
-        return parseCertResponse(response.getCertStore(), key, keystoreAlias, keystorePassword);
+        return new CertReqResponse(response.getCertStore(), key);
     }
 
-    private static byte[] parseCertResponse(CertStore store, PrivateKey key, String keystoreAlias, String keystorePassword)
+    public static byte[] certResponse2pkcs12(CertStore store, PrivateKey key, String keystoreAlias, String keystorePassword)
             throws CertStoreException, CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException {
         Collection<? extends Certificate> certs = store.getCertificates(null);
 
