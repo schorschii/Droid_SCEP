@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 public class CertWatcher extends Worker {
 
+    static String TAG = "CertExpiryCheck";
+
     static String CHANNEL_ID = "cert_expiration_check";
     static CharSequence CHANNEL_NAME = "Cert Expiration Check";
 
@@ -34,7 +36,7 @@ public class CertWatcher extends Worker {
 
     @Override
     public ListenableWorker.Result doWork() {
-        Log.d("CertExpiryCheck", "Starting work...");
+        Log.d(TAG, "Starting work...");
         Context c = getApplicationContext();
         SharedPreferences sharedPref = c.getSharedPreferences(MainActivity.SHARED_PREF_SETTINGS, Context.MODE_PRIVATE);
 
@@ -57,19 +59,19 @@ public class CertWatcher extends Worker {
                         if(expiresInDays < warnDays) {
                             Intent i = new Intent(c, MainActivity.class);
                             showNotification(c, "Certificate Expiration Warning", warnText, i, 0);
-                            Log.w("CertExpiryCheck", warnText);
+                            Log.w(TAG, warnText);
                         } else {
-                            Log.i("CertExpiryCheck", warnText);
+                            Log.i(TAG, warnText);
                         }
                     } else {
-                        Log.w("CertExpiryCheck", "No cert found for alias: "+alias);
+                        Log.w(TAG, "No cert found for alias: "+alias);
                     }
                 } catch(KeyChainException | InterruptedException e) {
-                    Log.e("CertExpiryCheck", e.getMessage());
+                    Log.e(TAG, e.getMessage());
                 }
             }
         } else {
-            Log.w("CertExpiryCheck", "warn-days is 0, cancelling check!");
+            Log.w(TAG, "warn-days is 0, cancelling check!");
         }
 
         // indicate whether the work finished successfully with the Result
