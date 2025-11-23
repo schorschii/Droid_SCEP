@@ -40,7 +40,7 @@
     <string name="monitor">Überwachen</string>
     <string name="generate_csr_title">Certificate Signing Request (CSR) generieren</string>
     <string name="subject_distinguished_name">Subject Distinguished Name</string>
-    <string name="e_mail_address">E-Mail-Adresse</string>
+    <string name="e_mail_address">RFC 822-Name</string>
     <string name="pem_key_file">PEM-Schlüsseldatei</string>
     <string name="choose">Auswählen…</string>
     <string name="pem_csr_file">CSR-Datei</string>

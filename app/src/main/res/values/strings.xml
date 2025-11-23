@@ -42,7 +42,7 @@
     <string name="monitor">Monitor</string>
     <string name="generate_csr_title">Generate Certificate Signing Request (CSR)</string>
     <string name="subject_distinguished_name">Subject Distinguished Name</string>
-    <string name="e_mail_address">Email address</string>
+    <string name="e_mail_address">RFC 822 name</string>
     <string name="pem_key_file">PEM key file</string>
     <string name="choose">Choose…</string>
     <string name="pem_csr_file">CSR file</string>
