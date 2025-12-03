@@ -9,7 +9,7 @@ It can (automatically) request an x509 certificate from a SCEP server such as [M
 
 This is a fork of [Droid_Scep2](https://github.com/gjyoung1974/Droid_Scep2), with updated libraries, certificate poll, monitoring and MDM policy configuration support added. Plus it provides some additional features like manual CSR creation and a PEM to PKCS12 converter.
 
-Certificates can be automatically (silently) enrolled and renewed if delegated scope CERT_INSTALL is granted and SCEP connection details are configured via MDM/EMM.
+Certificates can be automatically (silently) enrolled and renewed if delegated scope CERT_INSTALL is granted and SCEP connection details are configured via MDM/EMM. Additionally, it can be used as certificate selection app (private key mapping) if delegated scope CERT_SELECTION is granted, based on "cert-to-app" selection rules configured via MDM/EMM policy.
 
 ## Support
 You can hire me for commercial support or adjustments for this project. Please [contact me](https://georg-sieber.de/?page=impressum) if you are interested.

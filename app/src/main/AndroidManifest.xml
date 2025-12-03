@@ -30,6 +30,16 @@
         <activity
             android:name=".AboutActivity" />
 
+        <receiver
+            android:exported="true"
+            android:name=".CertSelector">
+            <intent-filter>
+                <action android:name="android.app.action.CHOOSE_PRIVATE_KEY_ALIAS"/>
+                <action android:name="android.app.action.NETWORK_LOGS_AVAILABLE"/>
+                <action android:name="android.app.action.SECURITY_LOGS_AVAILABLE"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

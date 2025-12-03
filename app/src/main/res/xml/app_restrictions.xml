@@ -51,4 +51,28 @@
         android:title="Days before trying automatic renewal"
         android:restrictionType="integer" />
 
+    <restriction
+        android:title="Certificate mapping"
+        android:key="cert_mapping"
+        android:restrictionType="bundle_array">
+        <restriction
+            android:title="Application Cert Ruleset"
+            android:key="mapping"
+            android:restrictionType="bundle">
+            <restriction
+                android:title="Application ID"
+                android:key="appid"
+                android:restrictionType="string" />
+            <restriction
+                android:title="URI"
+                android:key="uri"
+                android:defaultValue="*"
+                android:restrictionType="string" />
+            <restriction
+                android:title="Certificate Alias"
+                android:key="certalias"
+                android:restrictionType="string" />
+        </restriction>
+    </restriction>
+
 </restrictions>
