@@ -18,6 +18,10 @@
         android:title="Subject DN"
         android:restrictionType="string" />
     <restriction
+        android:key="upn"
+        android:title="User Principal Name (UPN)"
+        android:restrictionType="string" />
+    <restriction
         android:key="enrollment-challenge"
         android:title="Enrollment Challenge Password"
         android:restrictionType="string" />

@@ -26,10 +26,20 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.DERUTF8String;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.ExtensionsGenerator;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.util.encoders.Hex;
 import org.jscep.client.Client;
@@ -90,7 +100,7 @@ public class ScepClient {
         }
     }
 
-    public static CertReqResponse CertReq(String enrollmentURL, String entityName, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen)
+    public static CertReqResponse CertReq(String enrollmentURL, String entityName, String upn, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen)
             throws BadRequestException, RequestPendingException, ClientException, TransactionException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, IOException {
 
         // load SpongyCastle
@@ -131,9 +141,24 @@ public class ScepClient {
         JcaX509CertificateConverter conVert = new JcaX509CertificateConverter();
         X509Certificate cert = conVert.getCertificate(certH);
 
+        // add Subject Alt Name
+        ArrayList<GeneralName> names = new ArrayList<>();
+        if(upn != null && !upn.isEmpty()) {
+            ASN1EncodableVector otherNameStruct = new ASN1EncodableVector();
+            otherNameStruct.add(new ASN1ObjectIdentifier("1.3.6.1.4.1.311.20.2.3"));
+            otherNameStruct.add(new DERTaggedObject(0, new DERUTF8String(upn)));
+            names.add(new GeneralName(GeneralName.otherName, new DERSequence(otherNameStruct)));
+        }
+
         // generate the CSR
         PKCS10CertificationRequestBuilder crb = new JcaPKCS10CertificationRequestBuilder(
                 entity, keyPair.getPublic());
+        if(!names.isEmpty()) {
+            ExtensionsGenerator extGen = new ExtensionsGenerator();
+            GeneralNames subjectAltNames = new GeneralNames(names.toArray(new GeneralName[0]));
+            extGen.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
+            crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extGen.generate());
+        }
 
         // set the password
         DERPrintableString password = new DERPrintableString(enrollmentChallenge);

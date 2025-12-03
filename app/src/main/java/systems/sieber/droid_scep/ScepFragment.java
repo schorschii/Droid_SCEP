@@ -45,6 +45,7 @@ public class ScepFragment extends Fragment {
     RadioButton radioButtonSaveToFile;
     EditText editTextCaFingerprint;
     EditText editTextCommonName;
+    EditText editTextUpn;
     EditText editTextEnrollmentChallenge;
     EditText editTextEnrollmentProfile;
     EditText editTextKeystorePassword;
@@ -77,6 +78,7 @@ public class ScepFragment extends Fragment {
         radioButtonSaveToFile = v.findViewById(R.id.radioButtonSaveToFile);
         editTextCaFingerprint = v.findViewById(R.id.exitTextCaFingerprint);
         editTextCommonName = v.findViewById(R.id.exitTextCommonName);
+        editTextUpn = v.findViewById(R.id.exitTextUpn);
         editTextEnrollmentChallenge = v.findViewById(R.id.editTextEnrollmentChallenge);
         editTextEnrollmentProfile = v.findViewById(R.id.editTextEnrollmentProfile);
         editTextKeystorePassword = v.findViewById(R.id.editTextKeystorePassword);
@@ -95,6 +97,7 @@ public class ScepFragment extends Fragment {
             }
             editTextCaFingerprint.setText( sharedPrefSettings.getString("ca-fingerprint", "") );
             editTextCommonName.setText( sharedPrefSettings.getString("subject-dn", getString(R.string.default_subject_dn)) );
+            editTextUpn.setText( sharedPrefSettings.getString("upn", "" ) );
             editTextEnrollmentChallenge.setText( sharedPrefSettings.getString("enrollment-challenge", getString(R.string.default_enrollment_challenge)) );
             editTextEnrollmentProfile.setText( sharedPrefSettings.getString("enrollment-profile", getString(R.string.default_enrollment_profile)) );
             setSpinnerDefault(spinnerKeyLen, String.valueOf(sharedPrefSettings.getInt("rsa-key-length", Integer.parseInt(getString(R.string.default_rsa_len)))));
@@ -224,6 +227,7 @@ public class ScepFragment extends Fragment {
         edit.putString("scep-url", editTextUrl.getText().toString());
         edit.putBoolean("save-to-file", radioButtonSaveToFile.isChecked());
         edit.putString("subject-dn", editTextCommonName.getText().toString());
+        edit.putString("upn", editTextUpn.getText().toString());
         edit.putString("enrollment-challenge", editTextEnrollmentChallenge.getText().toString());
         edit.putString("enrollment-profile", editTextEnrollmentProfile.getText().toString());
         edit.putInt("rsa-key-length", Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem())));
@@ -261,6 +265,12 @@ public class ScepFragment extends Fragment {
             if(subjectDn != null) {
                 editTextCommonName.setText(subjectDn);
                 editTextCommonName.setEnabled(false);
+            }
+
+            String upn = appRestrictions.getString("upn", null);
+            if(upn != null) {
+                editTextUpn.setText(upn);
+                editTextUpn.setEnabled(false);
             }
 
             String enrollmentChallenge = appRestrictions.getString("enrollment-challenge", null);
@@ -318,6 +328,7 @@ public class ScepFragment extends Fragment {
                     ScepClient.CertReqResponse r = ScepClient.CertReq(
                             sURI.toString(),
                             editTextCommonName.getText().toString(),
+                            editTextUpn.getText().toString(),
                             editTextEnrollmentChallenge.getText().toString(),
                             editTextCaFingerprint.getText().toString().replace(" ", "").trim(),
                             editTextEnrollmentProfile.getText().toString(),

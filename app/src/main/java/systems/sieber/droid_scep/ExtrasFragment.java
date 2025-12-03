@@ -26,6 +26,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.apache.commons.io.IOUtils;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.Extension;
@@ -48,6 +53,7 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 
 
 public class ExtrasFragment extends Fragment {
@@ -222,21 +228,35 @@ public class ExtrasFragment extends Fragment {
                     JcaContentSignerBuilder csb = new JcaContentSignerBuilder("SHA256withRSA");
                     ContentSigner cs = csb.build(keyPair.getPrivate());
 
-                    // generate the CSR
-                    PKCS10CertificationRequestBuilder crb = new JcaPKCS10CertificationRequestBuilder(
-                            entity, keyPair.getPublic());
+                    ArrayList<GeneralName> names = new ArrayList<>();
 
                     // add email SAN
                     String email = ((EditText) v.findViewById(R.id.editTextEmail)).getText().toString();
                     if(!email.isEmpty()) {
+                        names.add(new GeneralName(GeneralName.rfc822Name, email));
+                    }
+
+                    // add UPN SAN
+                    String upn = ((EditText) v.findViewById(R.id.editTextUpn)).getText().toString();
+                    if(!upn.isEmpty()) {
+                        /*new GeneralName(GeneralName.otherName,
+                                        new DERSequence(new ASN1ObjectIdentifier("1.3.6.1.4.1.311.20.2.3"),
+                                                new DERTaggedObject(0, new DERUTF8String(upn))))*/
+                        ASN1EncodableVector otherNameStruct = new ASN1EncodableVector();
+                        otherNameStruct.add(new ASN1ObjectIdentifier("1.3.6.1.4.1.311.20.2.3"));
+                        otherNameStruct.add(new DERTaggedObject(0, new DERUTF8String(upn)));
+                        names.add(new GeneralName(GeneralName.otherName, new DERSequence(otherNameStruct)));
+                    }
+
+                    // generate the CSR
+                    PKCS10CertificationRequestBuilder crb = new JcaPKCS10CertificationRequestBuilder(
+                            entity, keyPair.getPublic());
+                    if(!names.isEmpty()) {
                         ExtensionsGenerator extGen = new ExtensionsGenerator();
-                        GeneralNames subjectAltNames = new GeneralNames(new GeneralName[] {
-                                new GeneralName(GeneralName.rfc822Name, email)
-                        });
+                        GeneralNames subjectAltNames = new GeneralNames(names.toArray(new GeneralName[0]));
                         extGen.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
                         crb.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extGen.generate());
                     }
-
                     String strCsr = ScepClient.csr2pem(crb.build(cs), true);
 
                     // save files

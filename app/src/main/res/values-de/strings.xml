@@ -54,5 +54,6 @@
     <string name="done">Fertig</string>
     <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
     <string name="ca_fingerprint">CA-Fingerprint (MD5)</string>
+    <string name="user_principal_name">User Principal Name (UPN)</string>
 
 </resources>

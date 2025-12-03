@@ -52,6 +52,7 @@ public class CertInstaller extends Worker {
         String alias = appRestrictions.getString("keystore-alias");
         String caFingerprint = appRestrictions.getString("ca-fingerprint");
         String subjectDn = appRestrictions.getString("subject-dn");
+        String upn = appRestrictions.getString("upn");
         String enrollmentChallenge = appRestrictions.getString("enrollment-challenge", "");
         String enrollmentProfile = appRestrictions.getString("enrollment-profile", "");
         int rsaKeyLenInt = appRestrictions.getInt("rsa-key-length", Integer.parseInt(c.getString(R.string.default_rsa_len)));
@@ -79,20 +80,20 @@ public class CertInstaller extends Worker {
             long expiresInDays = TimeUnit.DAYS.convert(chain[0].getNotAfter().getTime() - (new Date()).getTime(), TimeUnit.MILLISECONDS);
             if(expiresInDays < renewDays) {
                 // request or poll new cert
-                requestScep(url, subjectDn, enrollmentChallenge, caFingerprint, enrollmentProfile, rsaKeyLenInt, alias);
+                requestScep(url, subjectDn, upn, enrollmentChallenge, caFingerprint, enrollmentProfile, rsaKeyLenInt, alias);
             } else {
                 Log.i(TAG, alias+" expires on "+chain[0].getNotAfter().toString());
             }
         } else {
             // request or poll new cert
-            requestScep(url, subjectDn, enrollmentChallenge, caFingerprint, enrollmentProfile, rsaKeyLenInt, alias);
+            requestScep(url, subjectDn, upn, enrollmentChallenge, caFingerprint, enrollmentProfile, rsaKeyLenInt, alias);
         }
 
         // indicate whether the work finished successfully with the Result
         return Result.success();
     }
 
-    private void requestScep(String url, String dn, String challenge, String caFingerprint, String profile, int keyLength, String alias) {
+    private void requestScep(String url, String dn, String upn, String challenge, String caFingerprint, String profile, int keyLength, String alias) {
         try {
             String pendingCert = sharedPrefTemp.getString("cert", "");
             String pendingKey = sharedPrefTemp.getString("key", "");
@@ -101,7 +102,7 @@ public class CertInstaller extends Worker {
                     || pendingKey.isEmpty()
                     || pendingTid.isEmpty()) {
                 Log.i(TAG, "Requesting new cert");
-                ScepClient.CertReqResponse r = ScepClient.CertReq(url, dn, challenge, caFingerprint, profile, keyLength);
+                ScepClient.CertReqResponse r = ScepClient.CertReq(url, dn, upn, challenge, caFingerprint, profile, keyLength);
                 installKeyPair(alias, r.mPrivKey, r.mCertStore);
             } else {
                 Log.i(TAG, "Polling pending cert");

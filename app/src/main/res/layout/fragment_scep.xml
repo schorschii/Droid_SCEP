@@ -113,6 +113,20 @@
             android:text="@string/default_subject_dn" />
 
         <TextView
+            android:id="@+id/textViewUpn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/user_principal_name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <EditText
+            android:id="@+id/exitTextUpn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:labelFor="@id/textViewUpn" />
+
+        <TextView
             android:id="@+id/textViewEnrollmentChallenge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
