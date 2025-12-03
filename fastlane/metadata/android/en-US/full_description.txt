@@ -1,5 +1,7 @@
 This app enables you to request and poll certificates from a SCEP (Simple Certificate Enrollment Protocol) server. It can be configured via MDM (Mobile Device Management) policies.
 
+Certificates can be automatically (silently) enrolled and renewed if delegated scope CERT_INSTALL is granted and SCEP connection details are configured via MDM/EMM. Plus it can be used as certificate selection app (private key mapping) if delegated scope CERT_SELECTION is granted, based on "cert-to-app" selection rules configured via MDM/EMM policy.
+
 It can also be used to monitor the expiration of your personal certificates and send you a notification a couple of days before.
 
 Additionally, it provides a manual Certificate Signing Request (CSR) creation feature and a PEM to PKCS12 converter.
