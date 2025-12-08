@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
 		WorkManager wm = WorkManager.getInstance(this);
 		PeriodicWorkRequest certCheckRequest = new PeriodicWorkRequest.Builder(CertWatcher.class, 1, TimeUnit.DAYS).build();
 		wm.enqueueUniquePeriodicWork("certCheck", ExistingPeriodicWorkPolicy.REPLACE, certCheckRequest);
-		PeriodicWorkRequest certInstallRequest = new PeriodicWorkRequest.Builder(CertInstaller.class, 1, TimeUnit.HOURS).build();
-		wm.enqueueUniquePeriodicWork("certInstall", ExistingPeriodicWorkPolicy.REPLACE, certInstallRequest);
 
         try {
             for(WorkInfo wi : wm.getWorkInfosByTag(CertWatcher.class.getName()).get()) {
@@ -65,6 +63,16 @@ public class MainActivity extends AppCompatActivity {
         } catch(Exception ignored) { }
 
     }
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// init cert install background worker and manually start it every time the apps gets opened
+		WorkManager wm = WorkManager.getInstance(this);
+		PeriodicWorkRequest certInstallRequest = new PeriodicWorkRequest.Builder(CertInstaller.class, 1, TimeUnit.HOURS).build();
+		wm.enqueueUniquePeriodicWork("certInstall", ExistingPeriodicWorkPolicy.REPLACE, certInstallRequest);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
