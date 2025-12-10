@@ -19,10 +19,7 @@ public class CertSelector extends DelegatedAdminReceiver {
 
     private static final String TAG = "CertSelector";
 
-    private Context context;
-
     public String onChoosePrivateKeyAlias(Context c, @NonNull Intent intent, int uid, Uri uri, String alias) {
-        this.context = c;
         PackageManager pm = c.getPackageManager();
         String packageName = pm.getNameForUid(uid);
         String strUri = Uri.decode(String.valueOf(uri)).replace("/", "");
