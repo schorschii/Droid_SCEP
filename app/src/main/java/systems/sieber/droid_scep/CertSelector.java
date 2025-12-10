@@ -53,6 +53,7 @@ public class CertSelector extends DelegatedAdminReceiver {
         }
         Log.e(TAG, "received unknown request for " + alias);
         return null;
+        // returning null opens the manual cert selection dialog
     }
 
 }
