@@ -56,25 +56,26 @@
         android:restrictionType="integer" />
 
     <restriction
-        android:title="Certificate mapping"
         android:key="cert_mapping"
+        android:title="Certificate mapping"
+        android:description="@string/requires_delegated_scope_cert_selection"
         android:restrictionType="bundle_array">
         <restriction
-            android:title="Application Cert Ruleset"
             android:key="mapping"
+            android:title="Application Cert Ruleset"
             android:restrictionType="bundle">
             <restriction
-                android:title="Application ID"
                 android:key="appid"
+                android:title="Application ID"
                 android:restrictionType="string" />
             <restriction
-                android:title="URI"
                 android:key="uri"
+                android:title="URI"
                 android:defaultValue="*"
                 android:restrictionType="string" />
             <restriction
-                android:title="Certificate Alias"
                 android:key="certalias"
+                android:title="Certificate Alias"
                 android:restrictionType="string" />
         </restriction>
     </restriction>
