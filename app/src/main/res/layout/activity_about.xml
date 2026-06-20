@@ -50,6 +50,18 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:onClick="onClickGithub"
                 android:text="@string/link_github" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAllCaps="false"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:onClick="onClickLicense"
+                android:text="MIT License" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,6 +77,10 @@
                 android:onClick="onClickGithubBase"
                 android:text="@string/link_github_base" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,11 +95,48 @@
                 android:onClick="onClickGithubJscep"
                 android:text="@string/link_github_jscep" />
 
-            <TextView
-                android:id="@+id/textViewLicense"
-                android:layout_marginTop="14dp"
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/logo_oco" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:onClick="onClickOco"
+                    android:text="@string/open_computer_orchestration"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/logo_masterplan" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:onClick="onClickMasterplan"
+                    android:text="@string/masterplan_workforce_management"
+                    android:textAllCaps="false" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

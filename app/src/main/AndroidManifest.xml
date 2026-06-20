@@ -33,6 +33,9 @@
         <activity
             android:name=".AboutActivity" />
 
+        <activity
+            android:name=".LicenseActivity" />
+
         <receiver
             android:exported="true"
             android:name=".CertSelector">

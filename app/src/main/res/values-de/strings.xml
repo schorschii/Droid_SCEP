@@ -55,5 +55,7 @@
     <string name="copy_to_clipboard">In Zwischenablage kopieren</string>
     <string name="ca_fingerprint">CA-Fingerprint (MD5)</string>
     <string name="user_principal_name">User Principal Name (UPN)</string>
+    <string name="masterplan_workforce_management">MASTERPLAN Dienstplaner</string>
+    <string name="open_computer_orchestration">Open Computer Orchestration</string>
 
 </resources>
