@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 
 public class ScepFragment extends Fragment {
@@ -52,6 +53,7 @@ public class ScepFragment extends Fragment {
     EditText editTextTransactionId;
     Spinner spinnerKeyLen;
     String keystoreAlias;
+    private String unsupportedRsaKeySize;
 
     SharedPreferences sharedPrefTemp;
     SharedPreferences sharedPrefSettings;
@@ -106,6 +108,7 @@ public class ScepFragment extends Fragment {
 
             // apply MDM policies
             applyPolicies();
+            restrictRsaKeySizeSpinner();
         }
 
         // init buttons
@@ -230,7 +233,14 @@ public class ScepFragment extends Fragment {
         edit.putString("upn", editTextUpn.getText().toString());
         edit.putString("enrollment-challenge", editTextEnrollmentChallenge.getText().toString());
         edit.putString("enrollment-profile", editTextEnrollmentProfile.getText().toString());
-        edit.putInt("rsa-key-length", Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem())));
+        try {
+            int selectedKeySize = ScepClient.verifyRsaKeySize(
+                    Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem()))
+            );
+            edit.putInt("rsa-key-length", selectedKeySize);
+        } catch(IllegalArgumentException e) {
+            CommonDialog.show(activity, e.getClass().getName(), "Unsupported RSA key size", CommonDialog.Icon.ERROR, false);
+        }
         edit.apply();
     }
 
@@ -302,6 +312,13 @@ public class ScepFragment extends Fragment {
     }
 
     private void setSpinnerDefault(Spinner s, String def) {
+        try {
+            ScepClient.verifyRsaKeySize(Integer.parseInt(def));
+        } catch(IllegalArgumentException e) {
+            unsupportedRsaKeySize = def;
+            return;
+        }
+
         SpinnerAdapter adapter = s.getAdapter();
         for(int i = 0; i < adapter.getCount(); i++) {
             if(adapter.getItem(i).toString().equals(def)) {
@@ -310,12 +327,138 @@ public class ScepFragment extends Fragment {
         }
     }
 
+    private void restrictRsaKeySizeSpinner() {
+        SpinnerAdapter adapter = spinnerKeyLen.getAdapter();
+        if(adapter == null) {
+            spinnerKeyLen.setEnabled(false);
+            buttonRequest.setEnabled(false);
+            CommonDialog.show(activity, IllegalArgumentException.class.getName(), "No supported RSA key sizes are available", CommonDialog.Icon.ERROR, false);
+            return;
+        }
+
+        Object selectedItem = spinnerKeyLen.getSelectedItem();
+        String selectedKeySize = selectedItem == null ? null : selectedItem.toString();
+        boolean selectedKeySizeSupported = false;
+        if(selectedKeySize != null) {
+            try {
+                ScepClient.verifyRsaKeySize(Integer.parseInt(selectedKeySize));
+                selectedKeySizeSupported = true;
+            } catch(IllegalArgumentException e) {
+                if(unsupportedRsaKeySize == null) {
+                    unsupportedRsaKeySize = selectedKeySize;
+                }
+            }
+        }
+
+        ArrayList<Integer> permittedPositions = new ArrayList<>();
+        for(int i = 0; i < adapter.getCount(); i++) {
+            Object item = adapter.getItem(i);
+            if(item == null) continue;
+            try {
+                ScepClient.verifyRsaKeySize(Integer.parseInt(item.toString()));
+                permittedPositions.add(i);
+            } catch(IllegalArgumentException e) {
+                // Unsupported entries must not remain selectable.
+            }
+        }
+
+        if(permittedPositions.isEmpty()) {
+            spinnerKeyLen.setEnabled(false);
+            buttonRequest.setEnabled(false);
+            CommonDialog.show(activity, IllegalArgumentException.class.getName(), "No supported RSA key sizes are available", CommonDialog.Icon.ERROR, false);
+            return;
+        }
+
+        spinnerKeyLen.setAdapter(new PermittedRsaKeySizeAdapter(adapter, permittedPositions));
+        if(selectedKeySizeSupported) {
+            setSpinnerDefault(spinnerKeyLen, selectedKeySize);
+        }
+        if(unsupportedRsaKeySize != null) {
+            CommonDialog.show(activity, IllegalArgumentException.class.getName(), "Unsupported RSA key size: " + unsupportedRsaKeySize, CommonDialog.Icon.ERROR, false);
+        }
+    }
+
+    private static class PermittedRsaKeySizeAdapter implements SpinnerAdapter {
+        private final SpinnerAdapter adapter;
+        private final ArrayList<Integer> permittedPositions;
+
+        PermittedRsaKeySizeAdapter(SpinnerAdapter adapter, ArrayList<Integer> permittedPositions) {
+            this.adapter = adapter;
+            this.permittedPositions = permittedPositions;
+        }
+
+        @Override
+        public int getCount() {
+            return permittedPositions.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return adapter.getItem(permittedPositions.get(position));
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return adapter.getItemId(permittedPositions.get(position));
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return adapter.hasStableIds();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return adapter.getView(permittedPositions.get(position), convertView, parent);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            return adapter.getDropDownView(permittedPositions.get(position), convertView, parent);
+        }
+
+        @Override
+        public void registerDataSetObserver(android.database.DataSetObserver observer) {
+            adapter.registerDataSetObserver(observer);
+        }
+
+        @Override
+        public void unregisterDataSetObserver(android.database.DataSetObserver observer) {
+            adapter.unregisterDataSetObserver(observer);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return adapter.getItemViewType(permittedPositions.get(position));
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return adapter.getViewTypeCount();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return permittedPositions.isEmpty();
+        }
+
+    }
+
     private void request() {
+        final int isKeyLen;
+        try {
+            isKeyLen = ScepClient.verifyRsaKeySize(
+                    Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem()))
+            );
+        } catch(IllegalArgumentException e) {
+            CommonDialog.show(activity, e.getClass().getName(), "Unsupported RSA key size", CommonDialog.Icon.ERROR, false);
+            return;
+        }
+
         buttonRequest.setEnabled(false);
         buttonRequest.setText(getString(R.string.please_wait));
 
         CharSequence sURI = editTextUrl.getText();
-        int isKeyLen = Integer.parseInt(String.valueOf(spinnerKeyLen.getSelectedItem()));
 
         // enable some policies
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

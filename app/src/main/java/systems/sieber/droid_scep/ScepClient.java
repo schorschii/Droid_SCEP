@@ -100,6 +100,13 @@ public class ScepClient {
         }
     }
 
+    public static int verifyRsaKeySize(int keySize) {
+        if(keySize != 3072 && keySize != 4096) {
+            throw new IllegalArgumentException("Unsupported RSA key size: " + keySize);
+        }
+        return keySize;
+    }
+
     public static CertReqResponse CertReq(String enrollmentURL, String entityName, String upn, String enrollmentChallenge, String caFingerprint, String enrollmentProfile, int isKeyLen)
             throws BadRequestException, RequestPendingException, ClientException, TransactionException, NoSuchAlgorithmException, OperatorCreationException, CertificateException, IOException {
 
@@ -122,7 +129,8 @@ public class ScepClient {
 
         // generate key
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-        keyGen.initialize(isKeyLen);
+        int verifiedKeyLength = verifyRsaKeySize(isKeyLen);
+        keyGen.initialize(verifiedKeyLength);
         KeyPair keyPair = keyGen.genKeyPair();
 
         // create a self signed cert to sign the PKCS7 envelope
