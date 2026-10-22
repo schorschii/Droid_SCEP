@@ -65,6 +65,13 @@ public class CertInstaller extends Worker {
             return Result.success();
         }
 
+        try {
+            ScepClient.verifyRsaKeySize(rsaKeyLenInt);
+        } catch(IllegalArgumentException e) {
+            Log.e(TAG, "Unsupported RSA key length configured: " + rsaKeyLenInt);
+            return Result.failure();
+        }
+
         Log.d(TAG, "Starting work...");
         mPolicyManager = (DevicePolicyManager) c.getSystemService(Context.DEVICE_POLICY_SERVICE);
         // mPolicyManager.hasKeyPair(alias) requires API level 31...
